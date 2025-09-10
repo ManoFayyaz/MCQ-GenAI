@@ -3,5 +3,7 @@ langchain
 streamlit
 python-dotenv
 pyPDF2
+pandas
+
 
 -e .
