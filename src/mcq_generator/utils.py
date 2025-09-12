@@ -3,7 +3,7 @@ import os
 import json
 import re
 import streamlit as st
-import PyPDF2
+from PyPDF2 import PdfReader
 import traceback
 from pptx import Presentation
 from PIL import Image
@@ -24,7 +24,8 @@ def read_file(file):
     # ---- PDF ----
     if file.name.endswith('.pdf'):
         try:
-            pdf_reader = PyPDF2.PdfFileReader(file)
+            
+            pdf_reader = PdfReader(file)
             images = convert_from_bytes(file.getbuffer())  # for OCR
 
             for page_num, page in enumerate(pdf_reader.pages):
@@ -33,7 +34,7 @@ def read_file(file):
                 if extracted:
                     text += extracted + "\n"
 
-                # 2. OCR from images (every page)
+                # 2. OCR from images (always run OCR too)
                 if page_num < len(images):
                     img = images[page_num]
                     text += pytesseract.image_to_string(img) + "\n"
@@ -43,7 +44,7 @@ def read_file(file):
         except Exception as e:
             mcq_logger.error("Error reading PDF file: %s", e)
             st.error(f"An error occurred while reading PDF: {e}")
-
+            
     # ---- TXT ----
     elif file.name.endswith('.txt'):
         try:

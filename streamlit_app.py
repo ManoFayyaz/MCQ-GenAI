@@ -17,10 +17,16 @@ st.title("MCQ Generator using Generative AI")
 
 with st.form('user_input'):
     uploaded_file = st.file_uploader("Upload your file (PDF, PPT, or TXT)", type=["pdf", "ppt", "pptx", "txt"])
-    mcq_count=st.number_input("Number of MCQs to generate", min_value=5, max_value=50)
-    topic=st.text_input("Specify topic (optional), leave blank for entire text")
-    level=st.selectbox("Select complexity level", ["easy", "medium", "hard"])
-    submitted=st.form_submit_button("Generate MCQs")
+    mcq_count=st.number_input("Number of MCQs to generate(5-50) ",min_value=5, max_value=50)
+    topic = st.text_input("Specify topic (optional), leave blank for entire text")
+
+    if topic.strip():  # user entered something
+        topic = f"Generate questions only from the topic: {topic}"
+    else:  # user left it blank
+        topic = "Generate questions from the entire text"
+
+    level = st.selectbox("Select complexity level", ["easy", "medium", "hard"])
+    submitted = st.form_submit_button("Generate MCQs")
 
 if submitted and uploaded_file is not None and mcq_count and topic and level:
     try:
