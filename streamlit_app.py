@@ -18,11 +18,11 @@ st.title("MCQ Generator using Generative AI")
 with st.form('user_input'):
     uploaded_file = st.file_uploader("Upload your file (PDF, PPT, or TXT)", type=["pdf", "ppt", "pptx", "txt"])
     mcq_count=st.number_input("Number of MCQs to generate", min_value=5, max_value=50)
-    subject=st.text_input("subject")
+    topic=st.text_input("Specify topic (optional), leave blank for entire text")
     level=st.selectbox("Select complexity level", ["easy", "medium", "hard"])
     submitted=st.form_submit_button("Generate MCQs")
 
-if submitted and uploaded_file is not None and mcq_count and subject and level:
+if submitted and uploaded_file is not None and mcq_count and topic and level:
     try:
         with get_openai_callback() as cb:
             text=read_file(uploaded_file)
@@ -31,7 +31,7 @@ if submitted and uploaded_file is not None and mcq_count and subject and level:
                 result=generate_evaluate_chain.run(
                     text=text,
                     number=mcq_count,
-                    subject=subject,
+                    topic=topic,
                     level=level,
                     response_json=json.dumps(response_json)
                 )
