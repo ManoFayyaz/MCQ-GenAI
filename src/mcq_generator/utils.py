@@ -2,6 +2,8 @@
 import os
 import json
 import re
+import zipfile
+from io import BytesIO
 import streamlit as st
 from PyPDF2 import PdfReader
 import traceback
@@ -10,6 +12,7 @@ from PIL import Image
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r"D:\Tesseract-OCR\tesseract.exe"
 from pdf2image import convert_from_bytes
+from docx import Document 
 from src.mcq_generator.logger import logging as mcq_logger
 import io
 from sentence_transformers import SentenceTransformer
@@ -62,6 +65,28 @@ def read_file(file, file_id="default_doc"):
         except Exception as e:
             mcq_logger.error("Error reading PDF file: %s", e)
             st.error(f"An error occurred while reading PDF: {e}")
+
+    #--- DOCX---
+    elif file.name.endswith('.docx'):
+        try:
+            doc = Document(file)
+            for para in doc.paragraphs:
+                if para.text.strip():
+                    text += para.text + "\n"
+
+            file.seek(0)
+            images_text = ""
+            file_bytes = BytesIO(file.read())
+            with zipfile.ZipFile(file_bytes) as docx_zip:
+                for file_name in docx_zip.namelist():
+                    if file_name.startswith("word/media/"):
+                        with docx_zip.open(file_name) as image_file:
+                            img = Image.open(image_file)
+                            images_text += pytesseract.image_to_string(img) + "\n"
+                            
+        except Exception as e:
+            mcq_logger.error("Error reading DOCX file: %s", e)
+            st.error(f"An error occurred while reading DOCX: {e}")
 
     # ---- TXT ----
     elif file.name.endswith('.txt'):

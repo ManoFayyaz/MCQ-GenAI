@@ -16,7 +16,7 @@ with open(r"D:\MCQ-GenAI\response.json", "r") as file:
 st.title("MCQ Generator using Generative AI")
 
 with st.form('user_input'):
-    uploaded_file = st.file_uploader("Upload your file (PDF, PPT, or TXT)", type=["pdf", "ppt", "pptx", "txt"])
+    uploaded_file = st.file_uploader("Upload your file (PDF, PPT, DOCx or TXT)", type=["pdf", "docx", "ppt", "pptx", "txt"])
     mcq_count=st.number_input("Number of MCQs to generate(5-50) ",min_value=5, max_value=50)
     topic = st.text_input("Specify topic (optional), leave blank for entire text")
 
