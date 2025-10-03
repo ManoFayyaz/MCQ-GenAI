@@ -3,7 +3,7 @@ import json
 import traceback
 from dotenv import load_dotenv
 from src.mcq_generator.logger import logging
-from src.mcq_generator.utils import read_file, get_table_data
+from src.mcq_generator.utils import read_file, get_table_data,retrieve_context
 
 from src.mcq_generator.mcqgen import generate_evaluate_chain
 import streamlit as st
@@ -31,16 +31,21 @@ with st.form('user_input'):
 if submitted and uploaded_file is not None and mcq_count and topic and level:
     try:
         with get_openai_callback() as cb:
-            text=read_file(uploaded_file)
+            text = read_file(uploaded_file)  # saveed chunks + embeddings
+
             if text:
-                logging.info("File read successfully")
-                result=generate_evaluate_chain.run(
-                    text=text,
+            # logging.info("File read successfully")
+
+            #  Use retrieval helper instead of sending full text
+                context = retrieve_context(topic, top_k=5)
+
+                result = generate_evaluate_chain.run(
+                    text=context,
                     number=mcq_count,
                     topic=topic,
                     level=level,
-                    response_json=json.dumps(response_json)
-                )
+                    response_json=json.dumps(response_json))
+                
                 quiz_table=get_table_data(result)
                 # reviewed_quiz_table=get_table_data(result['reviewed_quiz'])
 
@@ -80,7 +85,7 @@ if st.session_state.get("quiz_generated"):
         selected = st.radio(
             f"Select your answer for Question {i+1}:",
             options,
-            index=options.index(st.session_state[key]) if st.session_state[key] in options else 0,
+            index=options.index(st.session_state[key]) if st.session_state[key] in options else None,
             key=key
         )
 

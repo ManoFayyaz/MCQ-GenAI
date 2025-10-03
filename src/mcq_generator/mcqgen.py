@@ -3,7 +3,7 @@ import json
 import traceback
 from dotenv import load_dotenv
 from src.mcq_generator.logger import logging
-from src.mcq_generator.utils import read_file, get_table_data
+from src.mcq_generator.utils import read_file, get_table_data, retrieve_context
 
 from langchain.chat_models import ChatOpenAI,openai
 from langchain.prompts import PromptTemplate    
@@ -24,7 +24,7 @@ llm=ChatOpenAI(
 # TEMPLATE = """
 # Text: {text}
 # You are an expert in creating engaging and challenging multiple choice questions (MCQs) for educational purposes.
-# Generate {number} multiple choice questions (MCQs) in the subject of {subject} and then keep the complexity level {level} of the questions. 
+# Generate {number} multiple choice questions (MCQs) makesure in the topic of {subject} if it's provided and then keep the complexity level {level} of the questions. 
 # Each question should have 4 options (A, B, C, D) and one correct answer.
 # Important: Include a field called "correct_answer" for each question indicating the correct option (A, B, C, or D).
 # Provide the output in the following JSON format exactly: {response_json}.
@@ -40,7 +40,7 @@ Text: {text}
 You are an expert in creating engaging and challenging multiple choice questions (MCQs) for educational purposes.
 
 The user may or may not specify a topic.  
-- If a topic is provided, generate {number} MCQs **only from that topic** in the text.  
+- If a topic is provided, generate {number} MCQs and make sure it's **only from that topic** in the text.  
 - If no topic is provided, generate {number} MCQs covering the **entire text**.
 
 Topic (if any): {topic}
@@ -66,17 +66,17 @@ quiz_prompt=PromptTemplate(
 
 quiz_chain = LLMChain(llm=llm, prompt=quiz_prompt, output_key="quiz", verbose=True)
 
-TEMPLATE2="""You are an english expert. Giver multiple choice questions (MCQs) for {subject} \" \
-"You need to evaluate the complexity of the questions " \" \
-"Update the quiz questions which needs to be simplified or made complex based on the complexity level \" \" \
-"Quiz mcqs: {quiz} \" 
-you can check from above quiz mcqs and update the questions """
+# TEMPLATE2="""You are an english expert. Giver multiple choice questions (MCQs) for {subject} \" \
+# "You need to evaluate the complexity of the questions " \" \
+# "Update the quiz questions which needs to be simplified or made complex based on the complexity level \" \" \
+# "Quiz mcqs: {quiz} \" 
+# you can check from above quiz mcqs and update the questions """
 
-quiz_evaluate_prompt=PromptTemplate(
-    input_variables=["quiz","subject"],
-    template=TEMPLATE2)
+# quiz_evaluate_prompt=PromptTemplate(
+#     input_variables=["quiz","subject"],
+#     template=TEMPLATE2)
 
-review_chain=LLMChain(llm=llm,prompt=quiz_evaluate_prompt,output_key="reviewed_quiz",verbose=True)
+# review_chain=LLMChain(llm=llm,prompt=quiz_evaluate_prompt,output_key="reviewed_quiz",verbose=True)
 
 generate_evaluate_chain=SequentialChain(
     chains=[quiz_chain],
