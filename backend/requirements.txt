@@ -4,6 +4,7 @@ streamlit
 python-dotenv
 pyPDF2
 pandas
+python -m venv env
 
 
 -e .
