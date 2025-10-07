@@ -23,6 +23,7 @@ embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Initialize Chroma client (local persistence)
 chroma_client = chromadb.PersistentClient(path="chroma_store")
+
 collection = chroma_client.get_or_create_collection(name="documents")
 
 # --------- Helper: split text into chunks ----------
@@ -122,6 +123,15 @@ def read_file(file, file_id="default_doc"):
     
     # ---- Store in Chroma ----
     if text.strip():
+        try:
+            chroma_client.delete_collection("documents")
+            mcq_logger.info("Old Chroma collection deleted")
+        except Exception as e:
+             mcq_logger.warning(f"Collection didn't exist or couldn't be deleted: {e}")
+
+
+        collection = chroma_client.get_or_create_collection(name="documents")
+
         chunks = split_text(text, chunk_size=500, overlap=50)
         embeddings = embedding_model.encode(chunks).tolist()
 
@@ -133,9 +143,9 @@ def read_file(file, file_id="default_doc"):
             ids=ids
         )
 
-    return text.strip()
+    return text.strip(),collection
 
-def retrieve_context(query,top_k=5):
+def retrieve_context(query,collection,top_k=5):
     results = collection.query(
         query_texts=[query],
         n_results=top_k

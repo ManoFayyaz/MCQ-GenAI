@@ -9,6 +9,15 @@ from src.mcq_generator.mcqgen import generate_evaluate_chain
 import streamlit as st
 from langchain_community.callbacks import get_openai_callback
 
+import sys
+print(f"Running from: {sys.executable}")
+try:
+    import onnxruntime
+    print("onnxruntime found:", onnxruntime.__version__)
+except ImportError:
+    print("onnxruntime missing!")
+
+
 with open(r"D:\MCQ-GenAI\backend\response.json", "r") as file:
     response_json = json.load(file)
 
@@ -31,13 +40,14 @@ with st.form('user_input'):
 if submitted and uploaded_file is not None and mcq_count and topic and level:
     try:
         with get_openai_callback() as cb:
-            text = read_file(uploaded_file)  # saveed chunks + embeddings
+            text ,collection= read_file(uploaded_file)  # saveed chunks + embeddings
 
             if text:
                 logging.info("File read successfully")
 
+
             #  Use retrieval helper instead of sending full text
-                context = retrieve_context(topic, top_k=5)
+                context = retrieve_context(topic,collection , top_k=5)
 
                 result = generate_evaluate_chain.run(
                     text=context,
