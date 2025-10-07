@@ -9,7 +9,7 @@ from src.mcq_generator.mcqgen import generate_evaluate_chain
 import streamlit as st
 from langchain_community.callbacks import get_openai_callback
 
-with open(r"D:\MCQ-GenAI\response.json", "r") as file:
+with open(r"D:\MCQ-GenAI\backend\response.json", "r") as file:
     response_json = json.load(file)
 
 
@@ -34,7 +34,7 @@ if submitted and uploaded_file is not None and mcq_count and topic and level:
             text = read_file(uploaded_file)  # saveed chunks + embeddings
 
             if text:
-            # logging.info("File read successfully")
+                logging.info("File read successfully")
 
             #  Use retrieval helper instead of sending full text
                 context = retrieve_context(topic, top_k=5)
