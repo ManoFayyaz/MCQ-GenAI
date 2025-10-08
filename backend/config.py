@@ -1,12 +1,10 @@
 import os
 
-class Config:
-    # PostgreSQL connection
-    # Format: postgresql://username:password@host:port/database
-    SQLALCHEMY_DATABASE_URI = "postgresql://prepwise_user:admin@localhost:5432/prepwise_db"
-    
-    # Disable modification tracking (optional)
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+DB_USER = "postgres"           # your PostgreSQL username
+DB_PASSWORD = "admin"  # replace with your real password
+DB_HOST = "localhost"
+DB_PORT = "5432"
+DB_NAME = "prepwise_db"
 
-    # Secret key for session management (login)
-    SECRET_KEY = os.urandom(24)
+SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+SQLALCHEMY_TRACK_MODIFICATIONS = False
