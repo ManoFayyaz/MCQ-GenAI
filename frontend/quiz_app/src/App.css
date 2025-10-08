@@ -1,5 +1,5 @@
 .custom-navbar {
-  background-color:#4a0a71	; /* light purple */
+  background-color:#a040dc	; /* light purple */
 }
 
 .custom-navbar .navbar-brand,
@@ -8,14 +8,13 @@
 }
 
 .custom-navbar .nav-link:hover {
-  color: #cfbeea;/* lighter hover color */
+  color: #5722ad;/* lighter hover color */
 }
 
 .imp_button{
-    background-color:#4a0a71 ;
+    background-color:#a040dc ;
     color: white;
-    border-color: #4a0a71;
-    
+    border-color: #a040dc;
 }
 
 .imp_button:hover{
