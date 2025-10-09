@@ -120,7 +120,11 @@ def read_file(file, file_id="default_doc"):
             st.error(f"An error occurred while reading PPT: {e}")
 
     # Store embeddings in Chroma
-    
+    # collection_name = f"doc_{user_id}_{file_id}"
+
+    # # ---- Create or reuse that collection ----
+    # collection = chroma_client.get_or_create_collection(name=collection_name)
+
     # ---- Store in Chroma ----
     if text.strip():
         try:
