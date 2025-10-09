@@ -16,7 +16,7 @@ export default function About() {
 
           <p>
             PrepWise is an interactive learning platform that helps students prepare for quizzes 
-            and exams effectively using AI-powered question generation.
+            and entry test exams effectively using AI-powered question generation.
           </p>
 
           <p>
