@@ -7,16 +7,39 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+const handleRegister = async (e) => {
+  e.preventDefault();
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://127.0.0.1:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Registration successful!");
+      navigate("/"); // redirect to login page
+    } else {
+      alert(data.error || "Registration failed. Try again.");
     }
-    console.log("Email:", email, "Password:", password);
-    // Later: connect to Flask API
-    navigate('/');
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Something went wrong while registering!");
+  }
+};
 
   return (
     <div className="container mt-5">

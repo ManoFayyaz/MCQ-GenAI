@@ -1,18 +1,33 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // For now just console log
-    console.log("Email:", email, "Password:", password);
-    // Later: connect to Flask API
-    navigate('/prepwise');
-  };
+  // const handleLogin = (e) => {
+  //   e.preventDefault();
+  //   // For now just console log
+  //   console.log("Email:", email, "Password:", password);
+  //   // Later: connect to Flask API
+  //   navigate('/prepwise');
+  // };
+
+  const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post("http://127.0.0.1:5000/login", {
+      email,
+      password,
+    });
+    alert(response.data.message);
+    navigate("/prepwise");
+  } catch (error) {
+    alert(error.response?.data?.error || "Login failed");
+  }
+};
 
   return (
     <div className="container mt-5">
