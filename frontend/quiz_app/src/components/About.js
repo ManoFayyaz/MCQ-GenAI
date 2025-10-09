@@ -21,16 +21,18 @@ export default function About() {
 
           <p>
             Upload your notes, PDFs, or textbooks and PrepWise converts them into engaging 
-            quizzes so you can test your understanding instantly.
+            quizzes so you can test your understanding instantly.<br/><br/>
+            You can also explain a specific topic to the AI, generate your desired number of MCQs with easy medium or difficult MCQs criteria.
+
           </p>
 
-        <div style={{ lineHeight: "1.8" }}>
-            <li>Upload study materials easily</li> 
-            <li>Generate AI-based quizzes</li>
-            <li>Track your progress</li>
+        <div style={{ lineHeight: "1.1" }}>
+            <p>Upload study materials easily</p> 
+            <p>Generate AI-based quizzes</p>
+            <p>Track your progress</p>
           </div>
 
-          <Link to="/" className="btn btn-success mt-3">Get Started</Link>
+          <Link to="/" className="btn btn-success mt-3 imp_button">Get Started</Link>
         </div>
 
       </div>
