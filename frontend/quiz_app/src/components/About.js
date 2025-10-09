@@ -20,13 +20,13 @@ export default function About() {
           </p>
 
           <p>
-            Upload your notes, PDFs, or textbooks — and PrepWise converts them into engaging 
+            Upload your notes, PDFs, or textbooks and PrepWise converts them into engaging 
             quizzes so you can test your understanding instantly.
           </p>
 
         <div style={{ lineHeight: "1.8" }}>
             <li>Upload study materials easily</li> 
-            <li>enerate AI-based quizzes</li>
+            <li>Generate AI-based quizzes</li>
             <li>Track your progress</li>
           </div>
 
