@@ -7,14 +7,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  // const handleLogin = (e) => {
-  //   e.preventDefault();
-  //   // For now just console log
-  //   console.log("Email:", email, "Password:", password);
-  //   // Later: connect to Flask API
-  //   navigate('/prepwise');
-  // };
-
+  
   const handleLogin = async (e) => {
   e.preventDefault();
   try {

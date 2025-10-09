@@ -18,6 +18,7 @@ function AppNavbar() {
         <Nav className="ms-auto">
             <Nav.Link as={Link} to="/">Login</Nav.Link>
             <Nav.Link as={Link} to="/register">Register</Nav.Link>
+            <Nav.Link as={Link} to="/about">About</Nav.Link>
             <Nav.Link as={Link} to="/prepwise">Quiz</Nav.Link>
         </Nav>
         </Navbar.Collapse>
