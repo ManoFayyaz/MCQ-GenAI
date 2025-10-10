@@ -147,10 +147,10 @@ def upload_and_generate():
     #  New check — make sure the user exists
     user = User.query.filter_by(id=user_id).first()
     if not user:
-        print(f"❌ User with ID {user_id} not found in DB")
+        print(f" User with ID {user_id} not found in DB")
         return jsonify({"error": "User not found"}), 404
     else:
-        print(f"✅ User found: {user.email}")
+        print(f" User found: {user.email}")
 
     filename = secure_filename(file.filename)
     file_hash_id = file_hash(file)
