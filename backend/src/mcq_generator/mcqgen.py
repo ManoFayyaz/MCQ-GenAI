@@ -3,7 +3,7 @@ import json
 import traceback
 from dotenv import load_dotenv
 from src.mcq_generator.logger import logging
-from src.mcq_generator.utils import read_file, get_table_data, retrieve_context
+from src.mcq_generator.utils import read_file_and_index, normalize_quiz_json, retrieve_context
 
 from langchain.chat_models import ChatOpenAI,openai
 from langchain.prompts import PromptTemplate    

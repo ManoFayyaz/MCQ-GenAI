@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+// import axios from "axios";
+
 
 export default function Prepwise() {
   const [file, setFile] = useState(null);
@@ -11,38 +13,64 @@ export default function Prepwise() {
   const [score, setScore] = useState(null);
 
   // Mock data for testing UI before Flask connection
-  const sampleQuiz = [
-    {
-      id: 1,
-      question: "Which data structure uses LIFO order?",
-      options: ["Queue", "Stack", "Array", "Tree"],
-      correct: "Stack",
-    },
-    {
-      id: 2,
-      question: "Which protocol is used for email?",
-      options: ["HTTP", "SMTP", "FTP", "DNS"],
-      correct: "SMTP",
-    },
-  ];
+  // const sampleQuiz = [
+  //   {
+  //     id: 1,
+  //     question: "Which data structure uses LIFO order?",
+  //     options: ["Queue", "Stack", "Array", "Tree"],
+  //     correct: "Stack",
+  //   },
+  //   {
+  //     id: 2,
+  //     question: "Which protocol is used for email?",
+  //     options: ["HTTP", "SMTP", "FTP", "DNS"],
+  //     correct: "SMTP",
+  //   },
+  // ];
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  const handleGenerateQuiz = (e) => {
-    e.preventDefault();
-    if (!file) {
-      alert("Please upload a study file first!");
+  const handleGenerateQuiz = async (e) => {
+  e.preventDefault();
+  if (!file) {
+    alert("Please upload a study file first!");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("user_id", 1); // replace with logged-in user id
+  formData.append("num_questions", mcqCount);
+  formData.append("topic", topic);
+  formData.append("difficulty", difficulty);
+
+  try {
+    const res = await fetch("http://127.0.0.1:5000/api/upload_generate", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.error || "Failed to generate quiz");
       return;
     }
-    // Later: send request to Flask API
-    console.log("Generating quiz with:", { file, mcqCount, topic, difficulty });
-    setQuiz(sampleQuiz); // Replace with real response from backend
+    // data.mcqs is array of {id, question, options}
+    const mapped = data.mcqs.map((m) => ({
+      id: m.id,
+      question: m.question,
+      options: m.options
+    }));
+    setQuiz(mapped);
     setSubmitted(false);
     setAnswers({});
     setScore(null);
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Error generating quiz");
+  }
+};
 
   const handleOptionSelect = (qid, option) => {
     setAnswers({ ...answers, [qid]: option });
