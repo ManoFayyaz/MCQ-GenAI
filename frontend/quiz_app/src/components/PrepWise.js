@@ -41,7 +41,13 @@ export default function Prepwise() {
 
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("user_id", 1); // replace with logged-in user id
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log("User object:", user);
+  if (!user || !user.id) {
+  alert("User not found in localStorage — please log in again.");
+  return;
+}
+  formData.append("user_id", user?.id);
   formData.append("num_questions", mcqCount);
   formData.append("topic", topic);
   formData.append("difficulty", difficulty);

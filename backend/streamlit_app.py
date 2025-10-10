@@ -47,7 +47,7 @@ if submitted and uploaded_file is not None and mcq_count and topic and level:
 
 
             #  Use retrieval helper instead of sending full text
-                context = retrieve_context(topic,collection , top_k=5)
+                context = retrieve_context(topic, collection , top_k=5)
 
                 result = generate_evaluate_chain.run(
                     text=context,

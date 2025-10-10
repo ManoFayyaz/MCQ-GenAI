@@ -46,6 +46,11 @@ def register():
 
     return jsonify({'message': 'Registration successful!'}), 201
 
+@app.route("/debug_users")
+def debug_users():
+    users = User.query.all()
+    return jsonify([{"id": u.id, "email": u.email} for u in users])
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -55,7 +60,14 @@ def login():
 
     user = User.query.filter_by(email=email).first()
     if user and bcrypt.check_password_hash(user.password, password):
-        return jsonify({'message': 'Login successful!'}), 200
+         return jsonify({
+            "message": "Login successful",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "name": user.name if hasattr(user, "name") else None
+            }
+        }), 200
     else:
         return jsonify({'error': 'Invalid email or password'}), 401
 
@@ -125,6 +137,20 @@ def upload_and_generate():
     num_questions = int(request.form.get("num_questions", 5))
     topic = request.form.get("topic", "")
     difficulty = request.form.get("difficulty", "easy")
+
+#checking---
+    user_id = int(request.form.get("user_id", 0))
+    num_questions = int(request.form.get("num_questions", 5))
+    topic = request.form.get("topic", "")
+    difficulty = request.form.get("difficulty", "easy")
+
+    #  New check — make sure the user exists
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        print(f"❌ User with ID {user_id} not found in DB")
+        return jsonify({"error": "User not found"}), 404
+    else:
+        print(f"✅ User found: {user.email}")
 
     filename = secure_filename(file.filename)
     file_hash_id = file_hash(file)

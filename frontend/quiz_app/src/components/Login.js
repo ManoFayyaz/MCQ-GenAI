@@ -16,6 +16,9 @@ function Login() {
       password,
     });
     alert(response.data.message);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    console.log(JSON.parse(localStorage.getItem("user")));
+
     navigate("/prepwise");
   } catch (error) {
     alert(error.response?.data?.error || "Login failed");
