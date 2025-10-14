@@ -1,5 +1,5 @@
 # backend/app.py
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 import os
@@ -123,6 +123,31 @@ def mcq_parsed_list_from_llm(quiz_dict):
         })
     return items
 
+
+#helper route
+@app.route("/api/upload", methods=["POST"])
+def upload_file():
+    file = request.files["file"]
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    file_path = os.path.join("uploads", file.filename)
+    os.makedirs("uploads", exist_ok=True)
+    file.save(file_path)
+
+    session["uploaded_file"] = file_path
+    return jsonify({"message": "File uploaded successfully", "file_path": file_path})
+
+
+@app.route("/api/current_file", methods=["GET"])
+def get_current_file():
+    file_path = session.get("uploaded_file")
+    if not file_path:
+        return jsonify({"file_path": None})
+    return jsonify({"file_path": file_path})
+
+
+
 @app.route("/api/upload_generate", methods=["POST"])
 def upload_and_generate():
     if "file" not in request.files:
@@ -193,7 +218,8 @@ def upload_and_generate():
         response_mcqs.append({
             "id": m.id,
             "question": m.question_text,
-            "options": m.options
+            "options": m.options,
+            "correct": m.options[m.correct_index]
         })
 
     return jsonify({"quiz_id": quiz_row.id, "upload_id": upload.id, "mcqs": response_mcqs}), 201
@@ -207,32 +233,43 @@ def get_quiz(quiz_id):
         resp.append({"id": m.id, "question": m.question_text, "options": m.options})
     return jsonify({"quiz_id": quiz.id, "topic": quiz.topic, "difficulty": quiz.difficulty, "mcqs": resp})
 
+
 @app.route("/api/quiz/<int:quiz_id>/submit", methods=["POST"])
 def submit_quiz(quiz_id):
     data = request.get_json()
     answers = data.get("answers", [])
     user_id = int(data.get("user_id", 0))
+    
+    # Fetch MCQs for this quiz
     mcqs = MCQItem.query.filter_by(quiz_id=quiz_id).order_by(MCQItem.id).all()
     if len(mcqs) != len(answers):
         return jsonify({"error": "Number of answers does not match number of questions"}), 400
 
     correct_count = 0
     details = []
+
     for idx, mcq in enumerate(mcqs):
-        sel = int(answers[idx])
+        try:
+            sel = int(answers[idx])
+        except (TypeError, ValueError):
+            sel = -1  # Handle invalid selections gracefully
+
         is_correct = (sel == mcq.correct_index)
         if is_correct:
             correct_count += 1
+
         details.append({
             "mcq_id": mcq.id,
+            "question": mcq.question_text,
             "selected": sel,
-            "correct": mcq.correct_index,
+            "correct_index": mcq.correct_index,
             "is_correct": is_correct
         })
 
     wrong_count = len(mcqs) - correct_count
-    percentage = (correct_count / len(mcqs)) * 100.0
+    percentage = round((correct_count / len(mcqs)) * 100, 2)
 
+    # Optional suggestion logic
     if percentage >= 80:
         suggestion = "Good — try a harder level."
     elif percentage >= 50:
@@ -240,11 +277,63 @@ def submit_quiz(quiz_id):
     else:
         suggestion = "Review the material and try again."
 
-    attempt = QuizAttempt(quiz_id=quiz_id, user_id=user_id, answers=answers, correct_count=correct_count, wrong_count=wrong_count, percentage=percentage, suggestion=suggestion)
+    # Save attempt in DB
+    attempt = QuizAttempt(
+        quiz_id=quiz_id,
+        user_id=user_id,
+        answers=answers,
+        correct_count=correct_count,
+        wrong_count=wrong_count,
+        percentage=percentage,
+        suggestion=suggestion
+    )
     db.session.add(attempt)
     db.session.commit()
 
-    return jsonify({"correct_count": correct_count, "wrong_count": wrong_count, "percentage": percentage, "suggestion": suggestion, "details": details})
+    return jsonify({
+        "correct_count": correct_count,
+        "wrong_count": wrong_count,
+        "percentage": percentage,
+        "suggestion": suggestion,
+        "details": details
+    })
+
+    # data = request.get_json()
+    # answers = data.get("answers", [])
+    # user_id = int(data.get("user_id", 0))
+    # mcqs = MCQItem.query.filter_by(quiz_id=quiz_id).order_by(MCQItem.id).all()
+    # if len(mcqs) != len(answers):
+    #     return jsonify({"error": "Number of answers does not match number of questions"}), 400
+
+    # correct_count = 0
+    # details = []
+    # for idx, mcq in enumerate(mcqs):
+    #     sel = int(answers[idx])
+    #     is_correct = (sel == mcq.correct_index)
+    #     if is_correct:
+    #         correct_count += 1
+    #     details.append({
+    #         "mcq_id": mcq.id,
+    #         "selected": sel,
+    #         "correct": mcq.correct_index,
+    #         "is_correct": is_correct
+    #     })
+
+    # wrong_count = len(mcqs) - correct_count
+    # percentage = (correct_count / len(mcqs)) * 100.0
+
+    # if percentage >= 80:
+    #     suggestion = "Good — try a harder level."
+    # elif percentage >= 50:
+    #     suggestion = "Practice more at this level."
+    # else:
+    #     suggestion = "Review the material and try again."
+
+    # attempt = QuizAttempt(quiz_id=quiz_id, user_id=user_id, answers=answers, correct_count=correct_count, wrong_count=wrong_count, percentage=percentage, suggestion=suggestion)
+    # db.session.add(attempt)
+    # db.session.commit()
+
+    # return jsonify({"correct_count": correct_count, "wrong_count": wrong_count, "percentage": percentage, "suggestion": suggestion, "details": details})
 
 @app.route("/api/retake", methods=["POST"])
 def retake_quiz():
