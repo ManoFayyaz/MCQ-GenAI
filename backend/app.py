@@ -258,14 +258,23 @@ def submit_quiz(quiz_id):
         if is_correct:
             correct_count += 1
 
+        # details.append({
+        #     "mcq_id": mcq.id,
+        #     "question": mcq.question_text,
+        #     "selected": sel,
+        #     "correct_index": mcq.correct_index,
+        #     "is_correct": is_correct
+        # })
         details.append({
             "mcq_id": mcq.id,
-            "question": mcq.question_text,
+            "question": mcq.question,
             "selected": sel,
+            "selected_option": mcq.options[sel] if 0 <= sel < len(mcq.options) else None,
             "correct_index": mcq.correct_index,
+            "correct_option": mcq.options[mcq.correct_index],
             "is_correct": is_correct
         })
-
+        
     wrong_count = len(mcqs) - correct_count
     percentage = round((correct_count / len(mcqs)) * 100, 2)
 
