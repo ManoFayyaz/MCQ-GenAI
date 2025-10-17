@@ -12,9 +12,13 @@ export default function Prepwise() {
   const [wrongCount, setWrongCount] = useState(0);
   const [result, setResult] = useState(null);
 
-  // 🟢 Keep previously uploaded file persistent
+
+// Keep previously uploaded file persistent (per user)
   useEffect(() => {
-    const storedFile = localStorage.getItem("uploadedFileName");
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.id) return;
+
+    const storedFile = localStorage.getItem(`uploadedFileName_${user.id}`);
     if (storedFile) {
       setFile({ name: storedFile });
     }
@@ -23,8 +27,10 @@ export default function Prepwise() {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
-    if (selectedFile) {
-      localStorage.setItem("uploadedFileName", selectedFile.name);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (selectedFile && user && user.id) {
+      localStorage.setItem(`uploadedFileName_${user.id}`, selectedFile.name);
     }
   };
 
