@@ -13,6 +13,8 @@ from models import db, User, Upload, Quiz, MCQItem, QuizAttempt
 from src.mcq_generator.utils import file_hash, read_file_and_index, retrieve_context
 from mcqgen_wrapper import generate_mcqs_from_text
 
+# from performance import performance_bp
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
@@ -25,7 +27,10 @@ bcrypt = Bcrypt(app)
 db.init_app(app)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
+#performance blueprint
+# app.register_blueprint(performance_bp)
 
+# -------------------- User Authentication Routes --------------------
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -236,76 +241,80 @@ def get_quiz(quiz_id):
 
 @app.route("/api/quiz/<int:quiz_id>/submit", methods=["POST"])
 def submit_quiz(quiz_id):
-    data = request.get_json()
-    answers = data.get("answers", [])
-    user_id = int(data.get("user_id", 0))
-    
-    # Fetch MCQs for this quiz
-    mcqs = MCQItem.query.filter_by(quiz_id=quiz_id).order_by(MCQItem.id).all()
-    if len(mcqs) != len(answers):
-        return jsonify({"error": "Number of answers does not match number of questions"}), 400
-
-    correct_count = 0
-    details = []
-
-    for idx, mcq in enumerate(mcqs):
-        try:
-            sel = int(answers[idx])
-        except (TypeError, ValueError):
-            sel = -1  # Handle invalid selections gracefully
-
-        is_correct = (sel == mcq.correct_index)
-        if is_correct:
-            correct_count += 1
-
-        # details.append({
-        #     "mcq_id": mcq.id,
-        #     "question": mcq.question_text,
-        #     "selected": sel,
-        #     "correct_index": mcq.correct_index,
-        #     "is_correct": is_correct
-        # })
-        details.append({
-            "mcq_id": mcq.id,
-            "question": mcq.question,
-            "selected": sel,
-            "selected_option": mcq.options[sel] if 0 <= sel < len(mcq.options) else None,
-            "correct_index": mcq.correct_index,
-            "correct_option": mcq.options[mcq.correct_index],
-            "is_correct": is_correct
-        })
+    try:
+        data = request.get_json()
+        answers = data.get("answers", [])
+        user_id = int(data.get("user_id", 0))
         
-    wrong_count = len(mcqs) - correct_count
-    percentage = round((correct_count / len(mcqs)) * 100, 2)
+        # Fetch MCQs for this quiz
+        mcqs = MCQItem.query.filter_by(quiz_id=quiz_id).order_by(MCQItem.id).all()
+        if len(mcqs) != len(answers):
+            return jsonify({"error": "Number of answers does not match number of questions"}), 400
 
-    # Optional suggestion logic
-    if percentage >= 80:
-        suggestion = "Good — try a harder level."
-    elif percentage >= 50:
-        suggestion = "Practice more at this level."
-    else:
-        suggestion = "Review the material and try again."
+        correct_count = 0
+        details = []
 
-    # Save attempt in DB
-    attempt = QuizAttempt(
-        quiz_id=quiz_id,
-        user_id=user_id,
-        answers=answers,
-        correct_count=correct_count,
-        wrong_count=wrong_count,
-        percentage=percentage,
-        suggestion=suggestion
-    )
-    db.session.add(attempt)
-    db.session.commit()
+        for idx, mcq in enumerate(mcqs):
+            try:
+                sel = int(answers[idx])
+            except (TypeError, ValueError):
+                sel = -1  # Handle invalid selections gracefully
 
-    return jsonify({
-        "correct_count": correct_count,
-        "wrong_count": wrong_count,
-        "percentage": percentage,
-        "suggestion": suggestion,
-        "details": details
-    })
+            is_correct = (sel == mcq.correct_index)
+            if is_correct:
+                correct_count += 1
+
+            # details.append({
+            #     "mcq_id": mcq.id,
+            #     "question": mcq.question_text,
+            #     "selected": sel,
+            #     "correct_index": mcq.correct_index,
+            #     "is_correct": is_correct
+            # })
+            details.append({
+                "mcq_id": mcq.id,
+                "question": mcq.question_text,
+                "selected": sel,
+                "selected_option": mcq.options[sel] if 0 <= sel < len(mcq.options) else None,
+                "correct_index": mcq.correct_index,
+                "correct_option": mcq.options[mcq.correct_index],
+                "is_correct": is_correct
+            })
+            
+        wrong_count = len(mcqs) - correct_count
+        percentage = round((correct_count / len(mcqs)) * 100, 2)
+
+        # Optional suggestion logic
+        if percentage >= 80:
+            suggestion = "Good — try a harder level."
+        elif percentage >= 50:
+            suggestion = "Practice more at this level."
+        else:
+            suggestion = "Review the material and try again."
+
+        # Save attempt in DB
+        attempt = QuizAttempt(
+            quiz_id=quiz_id,
+            user_id=user_id,
+            answers=answers,
+            correct_count=correct_count,
+            wrong_count=wrong_count,
+            percentage=percentage,
+            suggestion=suggestion
+        )
+        db.session.add(attempt)
+        db.session.commit()
+
+        return jsonify({
+            "correct_count": correct_count,
+            "wrong_count": wrong_count,
+            "percentage": percentage,
+            "suggestion": suggestion,
+            "details": details
+        })
+    except Exception as e:
+        print("Error in submit_quiz:", e)
+        return jsonify({"error": str(e)}), 500
 
     # data = request.get_json()
     # answers = data.get("answers", [])
@@ -401,6 +410,85 @@ def quiz_attempts(quiz_id):
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+
+
+@app.route("/api/user/<int:user_id>/performance", methods=["GET"])
+def user_performance(user_id):
+    uploads = Upload.query.filter_by(user_id=user_id).all()
+    performance_data = []
+
+    for upload in uploads:
+        quizzes = Quiz.query.filter_by(upload_id=upload.id).all()
+        all_attempts = []
+        for quiz in quizzes:
+            attempts = QuizAttempt.query.filter_by(user_id=user_id, quiz_id=quiz.id).order_by(QuizAttempt.created_at.asc()).all()
+            for a in attempts:
+                all_attempts.append({
+                    "date": a.created_at.date().isoformat(),
+                    "score": a.percentage
+                })
+
+        all_attempts.sort(key=lambda x: x["date"])
+        avg_score = round(sum(a["score"] for a in all_attempts)/len(all_attempts), 2) if all_attempts else 0
+
+        performance_data.append({
+            "upload_id": upload.id,
+            "material_name": upload.filename,
+            "attempts": all_attempts,
+            "average_score": avg_score
+        })
+
+    return jsonify(performance_data)
+
+
+
+# @app.route("/api/user/<int:user_id>/performance", methods=["GET"])
+# def user_performance(user_id):
+#     quizzes = Quiz.query.filter_by(user_id=user_id).order_by(Quiz.created_at.desc()).all()
+#     performance_data = []
+
+#     for quiz in quizzes:
+#         attempts = QuizAttempt.query.filter_by(quiz_id=quiz.id, user_id=user_id).order_by(QuizAttempt.created_at.asc()).all()
+#         last_attempt = attempts[-1] if attempts else None
+#         attempt_history = [
+#             {
+#                 "created_at": a.created_at.isoformat(),
+#                 "percentage": a.percentage,
+#                 "correct_count": a.correct_count,
+#                 "wrong_count": a.wrong_count
+#             }
+#             for a in attempts
+#         ]
+
+#         ai_suggestion = None
+#         # Only generate suggestion if user has made at least one attempt
+#         if last_attempt:
+#             upload = Upload.query.get(quiz.upload_id) if quiz.upload_id else None
+#             if upload:
+#                 # Retrieve context from the original document via RAG
+#                 context = retrieve_context("Provide study tips based on mistakes in this quiz", upload.collection_name, top_k=5)
+#                 if context:
+#                     # Generate a short personalized tip using your existing MCQ wrapper
+#                     parsed = generate_mcqs_from_text(
+#                         text=context,
+#                         number=1,
+#                         topic=quiz.topic or "",
+#                         level="easy"  # keep simple for tips
+#                     )
+#                     if parsed and "1" in parsed:
+#                         ai_suggestion = parsed["1"].get("question", "Review the material you struggled with.")
+
+#         performance_data.append({
+#             "quiz_id": quiz.id,
+#             "topic": quiz.topic,
+#             "difficulty": quiz.difficulty,
+#             "num_questions": quiz.num_questions,
+#             "last_percentage": last_attempt.percentage if last_attempt else None,
+#             "attempt_history": attempt_history,
+#             "ai_suggestion": ai_suggestion
+#         })
+
+#     return jsonify(performance_data)
 
 
 if __name__ == '__main__':

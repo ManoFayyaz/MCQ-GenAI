@@ -7,6 +7,7 @@ import Register from './components/Register';
 import PrepWise from './components/PrepWise';
 import AppNavbar from './components/Navbar';
 import About  from './components/About';
+import PerformanceTab from './components/PerformanceTab';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path='/about' element={<About />}/>
         <Route path="/prepwise" element={<PrepWise />} />
+        <Route path="/performance" element={<PerformanceTab userId={JSON.parse(localStorage.getItem("user")).id} />} />
       </Routes>
     </Router>
   );

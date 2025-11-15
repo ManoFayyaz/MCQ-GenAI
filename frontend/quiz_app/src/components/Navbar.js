@@ -34,6 +34,7 @@ function AppNavbar() {
                 <Nav.Link as={Link} to="/prepwise">Quiz</Nav.Link>
                 <Nav.Link as={Link} to="/about">About</Nav.Link>
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                <Nav.Link as={Link} to="/performance">Performance</Nav.Link>
               </>
             ) : (
               // If user is not logged in

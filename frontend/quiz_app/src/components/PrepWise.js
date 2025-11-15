@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
+
+import axios from "axios";
+
+
 
 export default function Prepwise() {
   const [file, setFile] = useState(null);
@@ -11,7 +16,8 @@ export default function Prepwise() {
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [result, setResult] = useState(null);
-
+  const [quizId, setQuizId] = useState(null);
+  
 
 // Keep previously uploaded file persistent (per user)
   useEffect(() => {
@@ -65,6 +71,9 @@ export default function Prepwise() {
         return;
       }
 
+    setQuiz(data.mcqs);       // store the MCQs in state
+    setQuizId(data.quiz_id);  // store the quiz ID in state
+
       const mapped = data.mcqs.map((m, index) => ({
         id: index + 1,
         question: m.question,
@@ -88,35 +97,164 @@ export default function Prepwise() {
     setAnswers({ ...answers, [qid]: option });
   };
 
-  const handleSubmitQuiz = () => {
-    if (Object.keys(answers).length !== quiz.length) {
-      alert("Please answer all questions before submitting!");
+  // Submit quiz and calculate results
+  const handleSubmitQuiz = async () => {
+  if (!quizId) {
+    alert("Quiz ID missing. Cannot submit.");
+    return;
+  }
+
+  if (Object.keys(answers).length !== quiz.length) {
+    alert("Please answer all questions before submitting!");
+    return;
+  }
+
+  let correct = 0;
+  let wrong = 0;
+  const details = [];
+
+  quiz.forEach((q) => {
+    const selected = answers[q.id];
+    const isCorrect = selected === q.correct;
+    if (isCorrect) correct++;
+    else wrong++;
+
+    details.push({
+      question: q.question,
+      selected_option: selected,
+      correct_option: q.correct,
+      is_correct: isCorrect,
+    });
+  });
+
+  setCorrectCount(correct);
+  setWrongCount(wrong);
+  setResult({ details });
+  setSubmitted(true);
+
+  // Save attempt to backend
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.id) {
+      alert("User not found. Please login again.");
       return;
     }
 
-    let correct = 0;
-    let wrong = 0;
-    const details = [];
+    const answersArray = quiz.map((q) => answers[q.id]);
 
-    quiz.forEach((q) => {
-      const selected = answers[q.id];
-      const isCorrect = selected === q.correct;
-      if (isCorrect) correct++;
-      else wrong++;
+    await axios.post(
+      `http://127.0.0.1:5000/api/quiz/${quizId}/submit`,
+      { user_id: user.id, answers: answersArray }
+    );
 
-      details.push({
-        question: q.question,
-        selected_option: selected,
-        correct_option: q.correct,
-        is_correct: isCorrect,
-      });
-    });
+    console.log("Quiz attempt saved!");
 
-    setCorrectCount(correct);
-    setWrongCount(wrong);
-    setResult({ details });
-    setSubmitted(true);
-  };
+  } catch (err) {
+    console.error("Error saving attempt:", err);
+    alert("Failed to save quiz attempt.");
+  }
+};
+
+
+//   const handleSubmitQuiz = async () => {
+//   if (Object.keys(answers).length !== quiz.length) {
+//     alert("Please answer all questions before submitting!");
+//     return;
+//   }
+
+//   let correct = 0;
+//   let wrong = 0;
+//   const details = [];
+
+//   quiz.forEach((q) => {
+//     const selected = answers[q.id];
+//     const isCorrect = selected === q.correct;
+//     if (isCorrect) correct++;
+//     else wrong++;
+
+//     details.push({
+//       question: q.question,
+//       selected_option: selected,
+//       correct_option: q.correct,
+//       is_correct: isCorrect,
+//     });
+//   });
+
+//   setCorrectCount(correct);
+//   setWrongCount(wrong);
+//   setResult({ details });
+//   setSubmitted(true);
+
+//   // ====== NEW ADDITION: Save attempt to backend ======
+
+//   try {
+//     const user = JSON.parse(localStorage.getItem("user"));
+//     if (!user || !user.id) {
+//       alert("User not found. Please login again.");
+//       return;
+//     }
+
+//     // Convert your MCQ format to backend expected index format
+//     const answersArray = quiz.map((q) => answers[q.id]);
+
+//     const QuizId = quiz[0].quiz_id || quiz[0].quizId;
+
+//     console.log("QUIZ OBJECT:", quiz);
+//     console.log("QUIZ ID:", QuizId);
+
+//     if (!QuizId) {
+//       console.error("QuizId missing in quiz data:", quiz);
+//       alert("Quiz ID is missing. Cannot save attempt.");
+//       return;
+//     }
+//     // const QuizId = quizId; 
+
+//     // Final POST
+//   await axios.post(
+//     `http://127.0.0.1:5000/api/quiz/${QuizId}/submit`,
+//     {
+//       user_id: user.id,
+//       answers: answersArray
+//     }
+//   );
+
+//     console.log("Quiz attempt saved!");
+
+//   } catch (err) {
+//     console.error("Error saving attempt:", err);
+//   }
+// };
+
+
+  // const handleSubmitQuiz = () => {
+  //   if (Object.keys(answers).length !== quiz.length) {
+  //     alert("Please answer all questions before submitting!");
+  //     return;
+  //   }
+
+  //   let correct = 0;
+  //   let wrong = 0;
+  //   const details = [];
+
+  //   quiz.forEach((q) => {
+  //     const selected = answers[q.id];
+  //     const isCorrect = selected === q.correct;
+  //     if (isCorrect) correct++;
+  //     else wrong++;
+
+  //     details.push({
+  //       question: q.question,
+  //       selected_option: selected,
+  //       correct_option: q.correct,
+  //       is_correct: isCorrect,
+  //     });
+  //   });
+
+  //   setCorrectCount(correct);
+  //   setWrongCount(wrong);
+  //   setResult({ details });
+  //   setSubmitted(true);
+  // };
 
   const handleRetakeQuiz = () => {
     setAnswers({});
