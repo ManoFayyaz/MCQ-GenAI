@@ -264,13 +264,7 @@ def submit_quiz(quiz_id):
             if is_correct:
                 correct_count += 1
 
-            # details.append({
-            #     "mcq_id": mcq.id,
-            #     "question": mcq.question_text,
-            #     "selected": sel,
-            #     "correct_index": mcq.correct_index,
-            #     "is_correct": is_correct
-            # })
+    
             details.append({
                 "mcq_id": mcq.id,
                 "question": mcq.question_text,
@@ -412,83 +406,53 @@ def uploaded_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
-@app.route("/api/user/<int:user_id>/performance", methods=["GET"])
-def user_performance(user_id):
-    uploads = Upload.query.filter_by(user_id=user_id).all()
-    performance_data = []
-
-    for upload in uploads:
-        quizzes = Quiz.query.filter_by(upload_id=upload.id).all()
-        all_attempts = []
-        for quiz in quizzes:
-            attempts = QuizAttempt.query.filter_by(user_id=user_id, quiz_id=quiz.id).order_by(QuizAttempt.created_at.asc()).all()
-            for a in attempts:
-                all_attempts.append({
-                    "date": a.created_at.date().isoformat(),
-                    "score": a.percentage
-                })
-
-        all_attempts.sort(key=lambda x: x["date"])
-        avg_score = round(sum(a["score"] for a in all_attempts)/len(all_attempts), 2) if all_attempts else 0
-
-        performance_data.append({
-            "upload_id": upload.id,
-            "material_name": upload.filename,
-            "attempts": all_attempts,
-            "average_score": avg_score
-        })
-
-    return jsonify(performance_data)
-
-
-
 # @app.route("/api/user/<int:user_id>/performance", methods=["GET"])
 # def user_performance(user_id):
-#     quizzes = Quiz.query.filter_by(user_id=user_id).order_by(Quiz.created_at.desc()).all()
+#     uploads = Upload.query.filter_by(user_id=user_id).all()
 #     performance_data = []
 
-#     for quiz in quizzes:
-#         attempts = QuizAttempt.query.filter_by(quiz_id=quiz.id, user_id=user_id).order_by(QuizAttempt.created_at.asc()).all()
-#         last_attempt = attempts[-1] if attempts else None
-#         attempt_history = [
-#             {
-#                 "created_at": a.created_at.isoformat(),
-#                 "percentage": a.percentage,
-#                 "correct_count": a.correct_count,
-#                 "wrong_count": a.wrong_count
-#             }
-#             for a in attempts
-#         ]
+#     for upload in uploads:
+#         quizzes = Quiz.query.filter_by(upload_id=upload.id).all()
+#         all_attempts = []
+#         for quiz in quizzes:
+#             attempts = QuizAttempt.query.filter_by(user_id=user_id, quiz_id=quiz.id).order_by(QuizAttempt.created_at.asc()).all()
+#             for a in attempts:
+#                 all_attempts.append({
+#                     "date": a.created_at.date().isoformat(),
+#                     "score": a.percentage
+#                 })
 
-#         ai_suggestion = None
-#         # Only generate suggestion if user has made at least one attempt
-#         if last_attempt:
-#             upload = Upload.query.get(quiz.upload_id) if quiz.upload_id else None
-#             if upload:
-#                 # Retrieve context from the original document via RAG
-#                 context = retrieve_context("Provide study tips based on mistakes in this quiz", upload.collection_name, top_k=5)
-#                 if context:
-#                     # Generate a short personalized tip using your existing MCQ wrapper
-#                     parsed = generate_mcqs_from_text(
-#                         text=context,
-#                         number=1,
-#                         topic=quiz.topic or "",
-#                         level="easy"  # keep simple for tips
-#                     )
-#                     if parsed and "1" in parsed:
-#                         ai_suggestion = parsed["1"].get("question", "Review the material you struggled with.")
+#         all_attempts.sort(key=lambda x: x["date"])
+#         avg_score = round(sum(a["score"] for a in all_attempts)/len(all_attempts), 2) if all_attempts else 0
 
 #         performance_data.append({
-#             "quiz_id": quiz.id,
-#             "topic": quiz.topic,
-#             "difficulty": quiz.difficulty,
-#             "num_questions": quiz.num_questions,
-#             "last_percentage": last_attempt.percentage if last_attempt else None,
-#             "attempt_history": attempt_history,
-#             "ai_suggestion": ai_suggestion
+#             "upload_id": upload.id,
+#             "material_name": upload.filename,
+#             "attempts": all_attempts,
+#             "average_score": avg_score
 #         })
 
 #     return jsonify(performance_data)
+
+@app.route("/api/user/<int:user_id>/quiz_attempts", methods=["GET"])
+def get_user_quiz_attempts(user_id):
+    try:
+        attempts = QuizAttempt.query.filter_by(user_id=user_id).order_by(QuizAttempt.created_at).all()
+        data = []
+        for a in attempts:
+            data.append({
+                "quiz_id": a.quiz_id,
+                "correct_count": a.correct_count,
+                "wrong_count": a.wrong_count,
+                "percentage": a.percentage,
+                "created_at": a.created_at.isoformat()
+            })
+        return jsonify(data)
+    except Exception as e:
+        print("Error fetching attempts:", e)
+        return jsonify({"error": str(e)}), 500
+
+
 
 
 if __name__ == '__main__':
