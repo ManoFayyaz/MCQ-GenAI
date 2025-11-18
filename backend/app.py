@@ -255,28 +255,29 @@ def submit_quiz(quiz_id):
         details = []
 
         for idx, mcq in enumerate(mcqs):
-            try:
-                sel = int(answers[idx])
-            except (TypeError, ValueError):
-                sel = -1  # Handle invalid selections gracefully
+                sel = answers[idx]
+                # except (TypeError, ValueError):
+                #     sel = -1  # Handle invalid selections gracefully
+                if sel is None or not isinstance(sel, int) or sel < 0 or sel >= len(mcq.options):
+                    sel = -1
 
-            is_correct = (sel == mcq.correct_index)
-            if is_correct:
-                correct_count += 1
+                is_correct = (sel == mcq.correct_index)
+                if is_correct:
+                    correct_count += 1
 
     
-            details.append({
-                "mcq_id": mcq.id,
-                "question": mcq.question_text,
-                "selected": sel,
-                "selected_option": mcq.options[sel] if 0 <= sel < len(mcq.options) else None,
-                "correct_index": mcq.correct_index,
-                "correct_option": mcq.options[mcq.correct_index],
-                "is_correct": is_correct
-            })
-            
-        wrong_count = len(mcqs) - correct_count
-        percentage = round((correct_count / len(mcqs)) * 100, 2)
+                details.append({
+                    "mcq_id": mcq.id,
+                    "question": mcq.question_text,
+                    "selected": sel,
+                    "selected_option": mcq.options[sel] if 0 <= sel < len(mcq.options) else None,
+                    "correct_index": mcq.correct_index,
+                    "correct_option": mcq.options[mcq.correct_index],
+                    "is_correct": is_correct
+                })
+                
+                wrong_count = len(mcqs) - correct_count
+                percentage = round((correct_count / len(mcqs)) * 100, 2)
 
         # Optional suggestion logic
         if percentage >= 80:
@@ -395,11 +396,31 @@ def user_quizzes(user_id):
         })
     return jsonify(out)
 
-@app.route("/api/quiz/<int:quiz_id>/attempts", methods=["GET"])
-def quiz_attempts(quiz_id):
-    attempts = QuizAttempt.query.filter_by(quiz_id=quiz_id).order_by(QuizAttempt.created_at.asc()).all()
-    data = [{"created_at": a.created_at.isoformat(), "percentage": a.percentage} for a in attempts]
+# @app.route("/api/quiz/<int:quiz_id>/attempts", methods=["GET"])
+# def quiz_attempts(quiz_id):
+#     attempts = QuizAttempt.query.filter_by(quiz_id=quiz_id).order_by(QuizAttempt.created_at.asc()).all()
+#     data = [{"created_at": a.created_at.isoformat(), "percentage": a.percentage} for a in attempts]
+#     return jsonify(data)
+
+@app.route("/api/user/<int:user_id>/attempts", methods=["GET"])
+def user_attempts(user_id):
+    # Fetch all attempts by user, ordered by date
+    attempts = QuizAttempt.query.filter_by(user_id=user_id).order_by(QuizAttempt.created_at.asc()).all()
+    
+    data = [
+        {
+            "created_at": a.created_at.isoformat(),
+            "percentage": a.percentage,
+            "correct": a.correct_count,
+            "wrong": a.wrong_count,
+            "total": a.correct_count + a.wrong_count
+        }
+        for a in attempts
+    ]
+    
     return jsonify(data)
+
+
 
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):

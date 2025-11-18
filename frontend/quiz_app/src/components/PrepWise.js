@@ -241,6 +241,11 @@ export default function Prepwise() {
       }
 
       const answersArray = quiz.map((q) => answers[q.id]);
+      // const answersArray = quiz.map((q) => {
+      //   const sel = answers[q.id];
+      //   // fallback to -1 if undefined
+      //   return typeof sel === "number" ? sel : -1;
+      // });
 
       await axios.post(
         `http://127.0.0.1:5000/api/quiz/${quizId}/submit`,
