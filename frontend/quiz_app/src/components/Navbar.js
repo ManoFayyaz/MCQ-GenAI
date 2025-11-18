@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Navbar, Container, Nav } from "react-bootstrap";
+import PerformanceTab from "./PerformanceTab";
 
 function AppNavbar() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ function AppNavbar() {
                 <Nav.Link as={Link} to="/prepwise">Quiz</Nav.Link>
                 <Nav.Link as={Link} to="/about">About</Nav.Link>
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
-                <Nav.Link as={Link} to="/performance">Performance</Nav.Link>
+                <Nav.Link as={Link} to="/performance" element={<PerformanceTab userId={JSON.parse(localStorage.getItem("user")).id} />}>Performance</Nav.Link>
               </>
             ) : (
               // If user is not logged in

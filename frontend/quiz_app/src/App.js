@@ -8,20 +8,24 @@ import PrepWise from './components/PrepWise';
 import AppNavbar from './components/Navbar';
 import About  from './components/About';
 import PerformanceTab from './components/PerformanceTab';
+import { QuizProvider } from "./context/QuizContext";
 
 function App() {
   return (
     <Router>
       <AppNavbar />  
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path='/about' element={<About />}/>
-        <Route path="/prepwise" element={<PrepWise />} />
-        <Route path="/performance" element={<PerformanceTab userId={JSON.parse(localStorage.getItem("user")).id} />} />
-      </Routes>
-    </Router>
+            <QuizProvider>
+                <Routes>
+                  <Route path="/" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path='/about' element={<About />}/>
+                  <Route path="/prepwise" element={<PrepWise />} />
+                  <Route path="/performance" element={<PerformanceTab />} />
+                </Routes>
+              </QuizProvider>   
+              </Router>
+           
   );
 }
-
+// element={<PerformanceTab userId={JSON.parse(localStorage.getItem("user")).id} />
 export default App;

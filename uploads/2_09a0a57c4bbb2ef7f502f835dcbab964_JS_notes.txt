@@ -1,0 +1,885 @@
+console.log("Hello");
+
+let age=21;
+console.log(age);
+x=undefined;
+y=null;
+
+b=true;
+console.log(b);
+
+{let name="Mehnoor"; 
+name="Ayleen";
+
+console.log(name);}
+
+console.log(typeof(age));
+
+let c=BigInt("99");
+
+const student={
+    name : "Mehnoor",
+    age:21,
+    cgpa:3.45
+}
+
+student.age=student["age"]+1
+console.log(student);
+
+const Product={
+    name:'Phone',
+    price:34000,
+    rating:4,
+    offer: 5
+}
+
+console.log(Product);
+
+// Airthmetic Operators
+
+let p=5;
+let q=9;
+let mul = p*q;
+
+console.log(mul);
+console.log(q/p);
+console.log(q%p);
+// Power of exponent
+console.log(q**2);
+
+// Unary (Increment and Decrement) Operators
+console.log(++q);
+console.log(q--);
+
+// Assignment Operators
+
+let num=3;
+// 3+1=4 stored in  num
+console.log(num+=1);
+// now 4*1=4 stored in num
+console.log(num*=8);
+console.log(num**=2);
+
+// Comparison Operators
+console.log(p==q);
+console.log(p!=q);
+console.log(p>=q);
+console.log(p<=q);
+
+// only values are compared
+let e=3;
+let f="9";
+console.log(e!=f);
+
+// also compares data type
+console.log(e!==f);
+
+// Logical Operators
+console.log(2>3 && 6<8);
+console.log(2>3 || 6<8);
+// logical not 
+console.log(!(7>8));
+
+// Conditions
+let i=25;
+
+if(i>18) {
+    console.log('Above 18');
+}
+
+// let gender=prompt("Enter gender \n 1:Male \n 2:Female");
+// if(gender==1){
+//     console.log("Male")
+// }
+// else if (gender==2) {
+//     console.log("Female")
+// } 
+// else {
+//     console.log("Invalid Input")
+// }
+
+let n=9
+if(n%2==0){
+    console.log("Even Number")
+}
+else{
+    console.log("Odd number")
+}
+
+// Ternary Operator
+n%2==0? console.log("Even Number"):console.log("Odd number");
+
+// Switch statement
+
+switch(new Date().getDay()){
+    case 0:
+        console.log("Sunday");
+        break;
+    case 1:
+            console.log("Monday");
+            break;
+    case 2:
+            console.log("Tuesday");
+            break;      
+    case 3:
+        console.log("Wednesday");
+        break;
+        
+    case 4:
+        console.log("Thursday");
+        break;
+    case 5:
+        console.log("Friday");
+        break;
+    case 6:
+        console.log("Monday");
+        break;
+    default:
+        console.log("Waiting.....");
+}
+
+// Practice Questions
+// let no=prompt("Enter number");
+// if(no%5==0){
+//     console.log("Multiple of 5");
+// }
+// else{
+//     console.log("Not a multiple of 5");
+// }
+
+
+// let score=prompt("Enter score to find out grade: ");
+let score=77
+if(score>=80 && score <=100){
+    console.log("Grade A");
+}
+else if(score>=70 && score<=89){
+    console.log("Grade B");
+}
+else if(score>=60 && score<=69){
+    console.log("Grade C");
+}
+else if(score>=50 && score<=59){
+    console.log("Grade D");
+}
+else if(score>=33 && score<=49){
+    console.log("Grade E");
+}
+else{
+    console.log("Grade F");
+}
+
+
+// Loops
+let sum=0;
+for(let i=1;i<=5;i++){
+    sum=sum+i;
+}
+console.log(sum);
+
+// Printing even numbers
+for(let i=0; i<=20;i+=2){
+    console.log(i);
+}
+
+// Loops
+let sum=0;
+for(let i=1;i<=5;i++){
+    sum=sum+i;
+}
+console.log(sum);
+
+// Printing even numbers
+for(let i=0; i<=20;i+=2){
+    console.log(i);
+}
+
+let it=1;
+while(it<=19){
+    console.log(it);
+    it+=2;
+}
+
+let o=1;
+do{
+    console.log(o);
+    o++
+}while(o<=4);
+
+// _____for of loop________
+// loops on strings and arrays, mainly strings
+str="OK";
+len=0;
+for(let i of str){
+    console.log(i);
+    len++;
+}
+console.log("String size: ",len)
+
+// *****for in loop****
+// For objects and arrays
+
+const person={
+    name: "Mehnoor",
+    age: 21
+}
+
+for(let key in person){
+    console.log(key,":",person[key]);
+}
+
+
+// Practice
+for(let i=0;i<=100;i++){
+    if(i%2!=0){
+        console.log(i);
+    }
+}
+
+// _____Strings______
+// immutable strings
+let s="Hello";
+let s1="World";
+console.log(s.length);
+console.log(s.toUpperCase());
+console.log(s.toLowerCase())
+console.log(s.trim());
+console.log(s.slice(0,4));
+console.log(s.concat(s1));
+console.log(s.replace("h","m"));
+console.log(s.charAt(4));
+
+
+
+// Use of template literal: strings to embed expressions called string interpolation ${}
+string=`This is a template literal`;
+console.log(string);
+
+const obj={
+    product: "Tie",
+    price:2500
+}
+
+console.log(`The cost of ${obj.product} is ${obj.price}`)
+
+// Practice
+
+let username=prompt("Enter your name: ");
+let new_username=username.concat(username.length);
+new_username="@"+new_username;
+console.log(new_username);
+
+////Loops and String
+let student=[78,34,23,55,66,22];
+console.log(student);
+console.log(student[5]);
+student[4]=90;
+console.log(student);
+
+for(let i=0;i<student.length;i++){
+    console.log(student[i]);
+}
+
+for(let i of student){
+    console.log(i);
+}
+
+let stu=[34,56,78,44,33];
+let sum=0;
+
+for(let i=0;i<stu.length;i++){
+    sum=sum+stu[i];
+}
+let avg=sum/stu.length;
+console.log(avg);
+
+console.log(stu.length);
+
+let items=[340,560,780,440,330];
+
+for(let i=0; i<items.length;i++){
+    let offer=items[i]/10;
+    items[i]=items[i]-offer;
+}
+
+for(let i of items){
+    console.log(i);
+}
+
+// add at the end of an array
+food=["cereal","chips"];
+food.push("puree");
+food.push("icecream");
+// deletes from the end of an array
+food.pop();
+console.log(food);
+
+// converts array into string
+let score=[34,44,56,22,33];
+console.log(score.toString());
+
+let ne = score.concat(items);
+console.log(ne);
+
+// unshift adds elements at the start of the array
+
+let sco=[34,44,56,22,33];
+sco.unshift(88);
+// unshift deletes elements at the start of the array
+sco.shift();
+sco.unshift(90);
+console.log(sco);
+
+
+let arr=["Microsoft","Uber","Google","LinkedIn"];
+arr.splice(1,1,"Ola");
+arr.shift();
+arr.push("Amazon");
+
+console.log(arr);
+
+
+//Functions*****
+
+function Message(){
+    console.log("We are learning JS");
+}
+
+Message();
+
+function Sum(a,b){
+    return a+b;
+}
+
+let s=Sum(2,3);
+console.log(s);
+
+// Arrow Functions> Compact way of writing a function
+const mul = (a,b)=>{
+    console.log(a*b);
+
+}
+mul(3,4);
+
+let rad=(diameter)=>{
+    console.log(diameter/2);
+}
+
+rad(8.8); 
+
+const msg= ()=>{
+    console.log("Hello");
+}
+
+msg();
+
+function Vowel(str){
+    let count=0;
+
+    for(const i of str){
+        if(i==="a"||i==="e"||i==="i"||i==="o"||i==="u")
+        {
+            count++;
+        }
+    }
+    console.log("Total vowels in a string",count);
+}
+
+Vowel("Pina Colada");
+
+const vowel= (str)=>{
+    let count=0;
+    for(const i of str){
+        if(i==="a"||i==="e"||i==="i"||i==="o"||i==="u")
+        {
+            count++;
+        }
+    }
+    console.log("Total vowels in a string",count);
+}
+
+vowel("Mehnoor");
+
+// For each loop for arrays
+// Its a higherorder function: they use other funnctions as a parameter or they return another function.
+
+// A callback function is passed as an argument to another function
+
+let arr=[3,4,6,5,2,1];
+
+arr.forEach(function myFunc(val,idx){
+    console.log(val,":",idx);
+})
+
+sum=0;
+arr.forEach((val)=>{
+    sum=sum+val;
+})
+console.log(sum);
+
+// square of each value
+
+let ar=[2,3,4,5,6,8,10];
+
+ar.forEach((num)=>{
+    console.log(num*num);
+})
+
+// Map :array method similar to for each method
+// map returns a new array
+
+let a=[2,3,4,5,];
+
+let cube=a.map((num)=>{
+    return num*num*num;
+})
+
+console.log(cube);
+
+// Filter array creates a new array based on some condition
+let n=[44,45,33,67,89,44,22,56];
+
+const new_array=n.filter((val)=>{
+    return val%2===0;
+})
+
+console.log(new_array);
+
+// Reduce method returns a single value of an array
+
+let red=[3,4,5,6];
+
+const result=red.reduce((res,val)=>{
+    return res+val;
+})
+console.log(result);
+
+// Return the highest in the array
+let com=[4,5,7,12,33,2];
+
+const final=com.reduce((res,current)=>{
+    return res>current?res:current;
+})
+
+console.log(final);
+
+// Practice
+
+let marks=[34,55,34,27,66,78,99,92,98];
+
+const r=marks.filter((val)=>{
+    return val>=90
+})
+
+console.log(r);
+
+let no=prompt("Enter a number to create an array of? ")
+let array_=[]
+for(let i=0;i<no;i++){
+    array_[i]=i+1;
+}
+
+console.log(array_);
+
+// Factorial of previous array
+let re=array_.reduce((val,curr)=>{
+    return val*curr;
+})
+
+console.log(re);
+
+//Fuctions and Array methods
+function Message(){
+    console.log("We are learning JS");
+}
+
+Message();
+
+function Sum(a,b){
+    return a+b;
+}
+
+let s=Sum(2,3);
+console.log(s);
+
+// Arrow Functions> Compact way of writing a function
+const mul = (a,b)=>{
+    console.log(a*b);
+
+}
+mul(3,4);
+
+let rad=(diameter)=>{
+    console.log(diameter/2);
+}
+
+rad(8.8); 
+
+const msg= ()=>{
+    console.log("Hello");
+}
+
+msg();
+
+function Vowel(str){
+    let count=0;
+
+    for(const i of str){
+        if(i==="a"||i==="e"||i==="i"||i==="o"||i==="u")
+        {
+            count++;
+        }
+    }
+    console.log("Total vowels in a string",count);
+}
+
+Vowel("Pina Colada");
+
+const vowel= (str)=>{
+    let count=0;
+    for(const i of str){
+        if(i==="a"||i==="e"||i==="i"||i==="o"||i==="u")
+        {
+            count++;
+        }
+    }
+    console.log("Total vowels in a string",count);
+}
+
+vowel("Mehnoor");
+
+// For each loop for arrays
+// Its a higherorder function: they use other funnctions as a parameter or they return another function.
+
+// A callback function is passed as an argument to another function
+
+let arr=[3,4,6,5,2,1];
+
+arr.forEach(function myFunc(val,idx){
+    console.log(val,":",idx);
+})
+
+sum=0;
+arr.forEach((val)=>{
+    sum=sum+val;
+})
+console.log(sum);
+
+// square of each value
+
+let ar=[2,3,4,5,6,8,10];
+
+ar.forEach((num)=>{
+    console.log(num*num);
+})
+
+// Map :array method similar to for each method
+// map returns a new array
+
+let a=[2,3,4,5,];
+
+let cube=a.map((num)=>{
+    return num*num*num;
+})
+
+console.log(cube);
+
+// Filter array creates a new array based on some condition
+let n=[44,45,33,67,89,44,22,56];
+
+const new_array=n.filter((val)=>{
+    return val%2===0;
+})
+
+console.log(new_array);
+
+// Reduce method returns a single value of an array
+
+let red=[3,4,5,6];
+
+const result=red.reduce((res,val)=>{
+    return res+val;
+})
+console.log(result);
+
+// Return the highest in the array
+let com=[4,5,7,12,33,2];
+
+const final=com.reduce((res,current)=>{
+    return res>current?res:current;
+})
+
+console.log(final);
+
+// Practice
+
+let marks=[34,55,34,27,66,78,99,92,98];
+
+const r=marks.filter((val)=>{
+    return val>=90
+})
+
+console.log(r);
+
+let no=prompt("Enter a number to create an array of? ")
+let array_=[]
+for(let i=0;i<no;i++){
+    array_[i]=i+1;
+}
+
+console.log(array_);
+
+// Factorial of previous array
+let re=array_.reduce((val,curr)=>{
+    return val*curr;
+})
+
+console.log(re);
+
+//DOM
+console.log(window.document.body);
+console.dir(document.head);
+console.dir(document.head.childNodes);
+
+let val=document.getElementsByClassName("container");
+console.dir(val);
+
+let para=document.getElementsByTagName("h3");
+console.log(para);
+
+let element=document.querySelector(".box");
+console.dir(element); 
+
+let ele=document.getElementsByClassName("box");
+console.dir(ele); 
+
+// let chi=document.querySelector("div").children;
+// console.log(chi);
+
+// Inner text property returns all it text content and its children
+let div=document.getElementsByClassName("box");
+console.dir(div);
+
+textContent property shows that hidden elements
+let h3=document.getElementsByTagName("p");
+console.dir(h3.innerText);
+
+h3.innerText=h3.innerText + "from Mehnoor";
+
+let divs= document.querySelector("#div1");
+
+divs.innerText=divs.innerText+" from Mehnoor";
+divs.style.backgroundColor="green";
+divs.style.fontSize="25px"; 
+divs.style.color="white";
+console.log(divs);
+
+let ids=divs.getAttribute("id");
+console.log(ids);
+
+//  let chn=document.querySelector("p");
+//  console.log(chn.setAttribute("class","para1"));
+
+
+//  created a new element
+ let btn=document.createElement("button");
+ btn.innerText="Click";
+ btn.style.color="white";
+ btn.style.font="13px";
+ btn.style.color="black";
+ btn.style.width="50px";
+ btn.style.borderRadius="20px";
+ btn.style.margin="5px";
+  console.log(btn);
+
+//   inside div at the end
+let div=document.querySelector("#div1");
+ div.append(btn);
+
+ //   inside div at the start
+ let div1=document.querySelector('#div1');
+ div.prepend(btn);
+
+ //   outside div at the start
+ let div2=document.querySelector('#div1');
+ div.before(btn);
+
+ //   outside div at the end
+ let div3=document.querySelector('#div1');
+ div.after(btn);
+
+ let heading=document.createElement("h1");
+heading.innerText="Heading";
+ document.querySelector("body").prepend(heading);
+
+//  Delete node
+// let para=document.querySelector(".para1");
+// para.remove();
+
+// last class is overwritten by new class
+let para=document.querySelector(".content");
+para.setAttribute("class","newContent");
+
+// CLASS LIST
+para.classList.add("content");
+console.log(para.classList);
+// CLASS LIST
+// para.classList.remove("content");
+
+
+//Events
+
+let box=document.querySelector(".box");
+
+// Event Object has details about the type of event (keyboard, mouse) its target as well
+// event object is defined
+box.addEventListener("mouseover", (e)=> {
+        console.log(e);
+        console.log(e.type);
+});
+
+box.addEventListener("mouseover", (e)=> {
+    console.log(e.clientX);
+    console.log(e.clientY);
+});
+
+let toggle_light=document.querySelector("button");
+let curr_mode="light";
+toggle_light.addEventListener("click",()=>{
+    if(curr_mode==="light"){
+        curr_mode="dark"
+        document.querySelector("body").style.backgroundColor="black";
+        document.querySelector("div").style.backgroundColor="black";
+        document.querySelector("div").style.color="white";
+        document.querySelector("body").style.color="white";
+    }
+
+    else{
+        curr_mode="light";
+        document.querySelector("body").style.backgroundColor = "white";
+        document.querySelector("body").style.color="black";
+        document.querySelector("div").style.color="black";
+        document.querySelector("div").style.backgroundColor="white";
+      
+    }
+});
+
+
+//  Objects
+const Student={
+    name:"Mehnoor",
+    class:"SE",
+    GPA:"3.57",
+    print: function(){
+    console.log(this.name,this.class,this.GPA);
+    }
+}
+// this is used to add a property or attribute of an object
+
+const Sports={
+    dept:"Cricket"
+}
+// Prototype : reference to an object
+Sports.__proto__=Student;
+
+
+class Bank{
+   constructor(bal){
+    this.currentBal=bal;
+   }
+
+   deposit(amount){
+        amount
+        if(amount>0){
+            this.currentBal=amount+this.currentBal
+            console.log(`Current Balance is ${this.currentBal}`);
+        }
+        else{
+            console.log("Invalid Amount is Entered!");
+        }
+   } 
+
+   withdraw(amount){
+   
+        if(amount>0 && amount<=this.currentBal){
+            this.currentBal=this.currentBal-amount
+            console.log(`Current Balance is ${this.currentBal}`);
+        }
+        else{
+            console.log("Insufficient Funds");
+        }
+   } 
+}
+
+let b1=new Bank(8000);
+b1.deposit(5000);
+b1.withdraw(3000);
+b1.deposit(5000);
+
+// Inheritance
+class Parent{
+    constructor(name){
+        this.name=name;
+        console.log("Constructor Child");
+      }
+      
+    Print() {
+        console.log("Hello");
+    }
+    
+}
+
+class Child extends Parent{
+   constructor(name){
+
+    // to create a constructor in a child call a super constructor
+    super(name);
+    console.log("Constructor Child");
+   }
+    Print(){
+        console.log("Hi")
+    }
+}
+let obj=new Child("Mehnoor");
+obj.Print();
+
+class Students{
+    constructor(name,email){
+        this.name=name;
+        this.email=email;
+    }
+
+    viewData(){
+        console.log(this.name,this.email);
+    }
+}
+
+class Admin extends Students{
+    constructor(name,email){
+        super(name,email);
+        this.name=name;
+        this.email=email;
+        console.log(this.name,this.email);
+    }
+    editData(){
+        console.log(this.name,this.email);
+    }
+}
+
+let s1=new Students("Laiba","laiba@gmail.com");
+s1.viewData();
+
+let a1=new Admin("Laiba","laiba13@gmail.com");
+a1.editData();
+
+// exception handling
+
+let a=4;
+let b=3;
+
+try{
+    console.log(a/c);
+}
+catch (err){
+    console.log(err);
+}
