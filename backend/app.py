@@ -276,8 +276,8 @@ def submit_quiz(quiz_id):
                     "is_correct": is_correct
                 })
                 
-                wrong_count = len(mcqs) - correct_count
-                percentage = round((correct_count / len(mcqs)) * 100, 2)
+        wrong_count = len(mcqs) - correct_count
+        percentage = round((correct_count / len(mcqs)) * 100, 2)
 
         # Optional suggestion logic
         if percentage >= 80:
