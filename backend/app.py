@@ -427,34 +427,6 @@ def uploaded_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
-# @app.route("/api/user/<int:user_id>/performance", methods=["GET"])
-# def user_performance(user_id):
-#     uploads = Upload.query.filter_by(user_id=user_id).all()
-#     performance_data = []
-
-#     for upload in uploads:
-#         quizzes = Quiz.query.filter_by(upload_id=upload.id).all()
-#         all_attempts = []
-#         for quiz in quizzes:
-#             attempts = QuizAttempt.query.filter_by(user_id=user_id, quiz_id=quiz.id).order_by(QuizAttempt.created_at.asc()).all()
-#             for a in attempts:
-#                 all_attempts.append({
-#                     "date": a.created_at.date().isoformat(),
-#                     "score": a.percentage
-#                 })
-
-#         all_attempts.sort(key=lambda x: x["date"])
-#         avg_score = round(sum(a["score"] for a in all_attempts)/len(all_attempts), 2) if all_attempts else 0
-
-#         performance_data.append({
-#             "upload_id": upload.id,
-#             "material_name": upload.filename,
-#             "attempts": all_attempts,
-#             "average_score": avg_score
-#         })
-
-#     return jsonify(performance_data)
-
 @app.route("/api/user/<int:user_id>/quiz_attempts", methods=["GET"])
 def get_user_quiz_attempts(user_id):
     try:
@@ -473,6 +445,29 @@ def get_user_quiz_attempts(user_id):
         print("Error fetching attempts:", e)
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/user/<int:user_id>/difficulty_trend", methods=["GET"])
+def difficulty_trend(user_id):
+    attempts = (
+        db.session.query(
+            QuizAttempt.created_at,
+            QuizAttempt.percentage,
+            Quiz.difficulty
+        )
+        .join(Quiz, QuizAttempt.quiz_id == Quiz.id)
+        .filter(QuizAttempt.user_id == user_id)
+        .order_by(QuizAttempt.created_at.asc())
+        .all()
+    )
+
+    result = []
+    for a in attempts:
+        result.append({
+            "date": a.created_at.date().isoformat(),
+            "percentage": a.percentage,
+            "difficulty": a.difficulty
+        })
+
+    return jsonify(result)
 
 
 
