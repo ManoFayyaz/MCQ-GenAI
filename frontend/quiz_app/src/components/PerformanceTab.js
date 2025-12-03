@@ -81,7 +81,9 @@ export default function PerformanceTab() {
     { name: "Wrong", value: totalWrong }
   ];
 
-
+  const filteredDifficultyTrend = [...difficultyTrend]
+  .sort((a, b) => new Date(a.date) - new Date(b.date))
+  .slice(-filterRange);
 
   return (
     <div className="performance-tab p-4">
@@ -173,7 +175,7 @@ export default function PerformanceTab() {
         <div style={{ width: "100%", height: 350 }} className="mt-5">
           <h3>Difficulty Trend Over Time</h3>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={difficultyTrend}>
+            <LineChart data={filteredDifficultyTrend}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis domain={[0, 100]} />
