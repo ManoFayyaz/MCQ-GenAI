@@ -5,6 +5,7 @@ from flask_cors import CORS
 import os
 import json
 from flask import Flask, request, jsonify, send_from_directory
+from streamlit import user
 from werkzeug.utils import secure_filename
 from flask_bcrypt import Bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -12,6 +13,7 @@ from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS, SECR
 from models import db, User, Upload, Quiz, MCQItem, QuizAttempt
 from src.mcq_generator.utils import file_hash, read_file_and_index, retrieve_context
 from mcqgen_wrapper import generate_mcqs_from_text
+from models import db, User, Upload, Quiz, MCQItem, QuizAttempt
 
 # from performance import performance_bp
 
@@ -239,6 +241,7 @@ def get_quiz(quiz_id):
     return jsonify({"quiz_id": quiz.id, "topic": quiz.topic, "difficulty": quiz.difficulty, "mcqs": resp})
 
 
+
 @app.route("/api/quiz/<int:quiz_id>/submit", methods=["POST"])
 def submit_quiz(quiz_id):
     try:
@@ -246,6 +249,37 @@ def submit_quiz(quiz_id):
         answers = data.get("answers", [])
         user_id = int(data.get("user_id", 0))
         
+        from datetime import datetime, timedelta
+        # --- STREAK LOGIC ---
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        today = datetime.utcnow().date()
+        last = user.last_quiz_at.date() if user.last_quiz_at else None
+
+        streak_to_send = None  # only send streak if first attempt today
+
+        if last == today:
+            # Already attempted today — streak unchanged, don't send
+            streak = user.streak
+        elif last == today - timedelta(days=1):
+            # Yesterday had a quiz — increment streak
+            user.streak = (user.streak or 0) + 1
+            streak = user.streak
+            streak_to_send = streak  # first attempt today, send streak
+        else:
+            # Missed a day — reset streak
+            user.streak = 1
+            streak = 1
+            streak_to_send = streak  # first attempt today, send streak
+
+        # Update last quiz time
+        user.last_quiz_at = datetime.utcnow()
+        db.session.commit()
+        # --- END STREAK LOGIC ---
+
+
         # Fetch MCQs for this quiz
         mcqs = MCQItem.query.filter_by(quiz_id=quiz_id).order_by(MCQItem.id).all()
         if len(mcqs) != len(answers):
@@ -305,49 +339,16 @@ def submit_quiz(quiz_id):
             "wrong_count": wrong_count,
             "percentage": percentage,
             "suggestion": suggestion,
-            "details": details
+            "details": details,
+            "streak": streak_to_send if streak_to_send else None
+
+
         })
     except Exception as e:
         print("Error in submit_quiz:", e)
         return jsonify({"error": str(e)}), 500
 
-    # data = request.get_json()
-    # answers = data.get("answers", [])
-    # user_id = int(data.get("user_id", 0))
-    # mcqs = MCQItem.query.filter_by(quiz_id=quiz_id).order_by(MCQItem.id).all()
-    # if len(mcqs) != len(answers):
-    #     return jsonify({"error": "Number of answers does not match number of questions"}), 400
-
-    # correct_count = 0
-    # details = []
-    # for idx, mcq in enumerate(mcqs):
-    #     sel = int(answers[idx])
-    #     is_correct = (sel == mcq.correct_index)
-    #     if is_correct:
-    #         correct_count += 1
-    #     details.append({
-    #         "mcq_id": mcq.id,
-    #         "selected": sel,
-    #         "correct": mcq.correct_index,
-    #         "is_correct": is_correct
-    #     })
-
-    # wrong_count = len(mcqs) - correct_count
-    # percentage = (correct_count / len(mcqs)) * 100.0
-
-    # if percentage >= 80:
-    #     suggestion = "Good — try a harder level."
-    # elif percentage >= 50:
-    #     suggestion = "Practice more at this level."
-    # else:
-    #     suggestion = "Review the material and try again."
-
-    # attempt = QuizAttempt(quiz_id=quiz_id, user_id=user_id, answers=answers, correct_count=correct_count, wrong_count=wrong_count, percentage=percentage, suggestion=suggestion)
-    # db.session.add(attempt)
-    # db.session.commit()
-
-    # return jsonify({"correct_count": correct_count, "wrong_count": wrong_count, "percentage": percentage, "suggestion": suggestion, "details": details})
-
+   
 @app.route("/api/retake", methods=["POST"])
 def retake_quiz():
     data = request.get_json()

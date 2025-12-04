@@ -20,3 +20,57 @@
 .imp_button:hover{
     background-color: #5e2184;
 }
+
+
+/* Background of profile page*/
+.profile-container {
+  min-height: 100vh;
+  background: #5722ad;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+/* Card */
+.profile-card {
+  width: 500px;
+  background: white;
+  border-radius: 22px;
+  padding: 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+/* Profile picture */
+.profile-pic-section {
+  margin-bottom: 20px;
+}
+
+.profile-pic {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #eee;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Upload button */
+.upload-btn {
+  margin-top: 10px;
+  background: #5722ad;
+  color: white;
+  padding: 7px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+}
+
+/* Email */
+.profile-email {
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: 600;
+}

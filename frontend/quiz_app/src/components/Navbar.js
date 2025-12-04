@@ -2,6 +2,8 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import PerformanceTab from "./PerformanceTab";
+// import ProfilePage from "./ProfilePage";
+
 
 function AppNavbar() {
   const navigate = useNavigate();
@@ -34,6 +36,9 @@ function AppNavbar() {
               <>
                 <Nav.Link as={Link} to="/prepwise">Quiz</Nav.Link>
                 <Nav.Link as={Link} to="/about">About</Nav.Link>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">Profile</Link>
+                </li>
                 <Nav.Link as={Link} to="/performance" element={<PerformanceTab userId={JSON.parse(localStorage.getItem("user")).id} />}>Performance</Nav.Link>
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
                 
@@ -56,36 +61,3 @@ function AppNavbar() {
 export default AppNavbar;
 
 
-
-
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-// import { Navbar, Container, Nav } from 'react-bootstrap';
-
-// function AppNavbar() {
-//   return (
-//     <Navbar className="custom-navbar" expand="lg">
-//     <Container>
-//         <Navbar.Brand 
-//         as={Link} 
-//         to="/" 
-//         style={{ fontFamily: "Raleway, sans-serif", fontWeight: '800' }}
-//         >
-//         <b>Prep Wise</b>
-//         </Navbar.Brand>
-//         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-//         <Navbar.Collapse id="basic-navbar-nav">
-//         <Nav className="ms-auto">
-//             <Nav.Link as={Link} to="/">Login</Nav.Link>
-//             <Nav.Link as={Link} to="/register">Register</Nav.Link>
-//             <Nav.Link as={Link} to="/about">About</Nav.Link>
-//             <Nav.Link as={Link} to="/prepwise">Quiz</Nav.Link>
-//         </Nav>
-//         </Navbar.Collapse>
-//     </Container>
-// </Navbar>
-
-//   );
-// }
-
-// export default AppNavbar;

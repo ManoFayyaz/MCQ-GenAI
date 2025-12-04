@@ -20,6 +20,8 @@ export default function Prepwise() {
   quizId, setQuizId
 } = useQuiz();
 
+  const [showStreak, setShowStreak] = useState("");
+
 
 
  
@@ -221,26 +223,27 @@ export default function Prepwise() {
         return;
       }
 
-      // const answersArray = quiz.map((q) => answers[q.id] ?? -1);
-
-      // const answersArray = quiz.map((q) => answers[q.id]);
-      // const answersArray = quiz.map((q) => {
-      //   const sel = answers[q.id];
-      //   // fallback to -1 if undefined
-      //   return typeof sel === "number" ? sel : -1;
-      // });
+     
 
       const answersArray = quiz.map((q) => {
         const selectedOption = answers[q.id];
         return q.options.indexOf(selectedOption); // get index
       });
 
-      await axios.post(
+      const res=await axios.post(
         `http://127.0.0.1:5000/api/quiz/${quizId}/submit`,
         { user_id: user.id, answers: answersArray }
       );
 
       console.log("Quiz attempt saved!");
+
+      // streak incoming from backend
+      if (res.data.streak) {
+        setShowStreak(`🔥 Streak Day: ${res.data.streak}`);
+        setTimeout(() => setShowStreak(""), 15000); // hide message after 15s
+      }
+
+
     } catch (err) {
       console.error("Error saving attempt:", err);
       alert("Failed to save quiz attempt.");
@@ -257,6 +260,15 @@ export default function Prepwise() {
 
   return (
     <div className="container mt-5">
+      {showStreak && (
+        <div
+          className="alert alert-warning text-center fw-bold"
+          style={{ fontSize: "1.2rem" }}
+        >
+          {showStreak}
+        </div>
+        )}
+
       <h2 className="text-center mb-4">🧠 PrepWise Quiz Generator</h2>
 
       {!quiz.length || submitted ? (

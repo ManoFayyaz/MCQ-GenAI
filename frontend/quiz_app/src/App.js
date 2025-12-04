@@ -9,6 +9,7 @@ import AppNavbar from './components/Navbar';
 import About  from './components/About';
 import PerformanceTab from './components/PerformanceTab';
 import { QuizProvider } from "./context/QuizContext";
+import ProfilePage from './components/ProfilePage';
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
                   <Route path='/about' element={<About />}/>
                   <Route path="/prepwise" element={<PrepWise />} />
                   <Route path="/performance" element={<PerformanceTab />} />
+                  <Route path="/profile" element={<ProfilePage />} />  
+
                 </Routes>
               </QuizProvider>   
               </Router>
