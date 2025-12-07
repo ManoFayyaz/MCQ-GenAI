@@ -65,13 +65,7 @@ export default function PerformanceTab() {
     .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
     .slice(-filterRange);
 
-  // Overall correct vs wrong
-  // const totalCorrect = attempts.reduce((sum, a) => sum + a.correct, 0);
-  // const totalWrong = attempts.reduce((sum, a) => sum + a.wrong, 0);
-  // const overallData = [
-  //   { name: "Correct", value: totalCorrect },
-  //   { name: "Wrong", value: totalWrong }
-  // ];
+
   
   // Overall correct vs wrong based on filtered attempts (slider)
   const totalCorrect = filteredAttempts.reduce((sum, a) => sum + a.correct, 0);

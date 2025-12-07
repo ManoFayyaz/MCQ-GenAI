@@ -23,7 +23,7 @@
 
 
 /* Background of profile page*/
-.profile-container {
+/* .profile-container {
   min-height: 100vh;
   background: #5722ad;
   display: flex;
@@ -42,35 +42,95 @@
   text-align: center;
 }
 
-/* Profile picture */
-.profile-pic-section {
-  margin-bottom: 20px;
-}
-
-.profile-pic {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 5px solid #eee;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Upload button */
-.upload-btn {
-  margin-top: 10px;
-  background: #5722ad;
-  color: white;
-  padding: 7px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 14px;
-}
 
 /* Email */
 .profile-email {
   margin-top: 10px;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 500;
+  color: white;
+} */
+
+.profile-page-container {
+  background-color: #ede7ff; /* light purple */
+  min-height: 100vh;
+  padding-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-card {
+  background: white;
+  width: 420px;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+}
+
+
+.email-text {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.profile-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #4a0072;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  margin-left: 120px;
+}
+
+/* ----- STREAKS BOX ----- */
+.streak-box {
+  background: #f4ecff;
+  border: 2px solid #d5c1ff;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.streak-number {
+  font-size: 40px;
+  font-weight: bold;
+  color: #7b4dff;
+}
+
+.profile-streak {
+  font-size: 18px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+}
+
+.profile-page-container{
+  background-color: #be78e3;
+  border-radius: 70px;
+}
+.profile-card{
+    background-color: #be78e3;
+
+}
+
+.settings-title{
+  color: white;
+}
+
+.btn{
+ color: white ;
+}
+
+.delete-btn{
+  border-radius: 10px;
+  background-color: #8f4bb4;
+  color: rgb(255, 255, 255);
+  border-color: white;
+  border-width: 1px;
+  font-size: 18px;
 }

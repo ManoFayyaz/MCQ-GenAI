@@ -397,11 +397,7 @@ def user_quizzes(user_id):
         })
     return jsonify(out)
 
-# @app.route("/api/quiz/<int:quiz_id>/attempts", methods=["GET"])
-# def quiz_attempts(quiz_id):
-#     attempts = QuizAttempt.query.filter_by(quiz_id=quiz_id).order_by(QuizAttempt.created_at.asc()).all()
-#     data = [{"created_at": a.created_at.isoformat(), "percentage": a.percentage} for a in attempts]
-#     return jsonify(data)
+
 
 @app.route("/api/user/<int:user_id>/attempts", methods=["GET"])
 def user_attempts(user_id):
@@ -446,6 +442,7 @@ def get_user_quiz_attempts(user_id):
         print("Error fetching attempts:", e)
         return jsonify({"error": str(e)}), 500
 
+
 @app.route("/api/user/<int:user_id>/difficulty_trend", methods=["GET"])
 def difficulty_trend(user_id):
     attempts = (
@@ -469,6 +466,43 @@ def difficulty_trend(user_id):
         })
 
     return jsonify(result)
+
+
+@app.route("/api/user/<int:user_id>", methods=["GET"])
+def get_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "id": user.id,
+        "email": user.email,
+        "streak": user.streak,
+        "last_quiz_at": user.last_quiz_at.isoformat() if user.last_quiz_at else None
+    })
+
+@app.route("/api/user/<int:user_id>/update", methods=["POST"])
+def update_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    new_email = data.get("email")
+    new_password = data.get("password")
+
+    if new_email:
+        user.email = new_email
+
+    if new_password:
+        user.password = generate_password_hash(new_password)
+
+    db.session.commit()
+
+    return jsonify({"message": "User updated successfully"})
+
+
+
 
 
 

@@ -1,151 +1,95 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import '../App.css';
+import "../App.css";
 
 export default function ProfilePage() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
-  const userId = user?.id;
-
   const [email, setEmail] = useState("");
-  const [profilePic, setProfilePic] = useState(null);
-  const [preview, setPreview] = useState(null);
   const [streak, setStreak] = useState(0);
+  const [userId, setUserId] = useState(null);
 
-  const [newEmail, setNewEmail] = useState("");
-  const [passwords, setPasswords] = useState({ old: "", new: "" });
+  // Load userId from sessionStorage once
+  // useEffect(() => {
+  //   const storedId = sessionStorage.getItem("user_id");
+  //   if (storedId) setUserId(storedId);
+  // }, []);
 
-  // Fetch profile details
+
+  // Get logged-in user
   useEffect(() => {
-    async function loadData() {
-      try {
-        const res = await axios.get(`http://127.0.0.1:5000/api/user/${userId}/profile`);
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.id) setUserId(user.id);
+  }, [])
+
+  // Fetch profile only when userId exists
+  useEffect(() => {
+    if (!userId) return;
+
+    console.log("Fetching profile for userId:", userId);
+
+    axios
+      .get(`http://127.0.0.1:5000/api/user/${userId}`)
+      .then((res) => {
+        console.log("Profile data:", res.data); // <-- debug
         setEmail(res.data.email);
-        setStreak(res.data.streak);
-        setProfilePic(res.data.profile_pic || null);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    loadData();
+        setStreak(res.data.streak || 0);
+      })
+      .catch((err) => console.log("Profile fetch error:", err));
   }, [userId]);
 
-  // Preview before upload
-  const handlePicChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setPreview(URL.createObjectURL(file));
-    uploadPicture(file);
-  };
+  const handleDelete = () => {
+    if (!userId) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete your account?");
+    if (!confirmDelete) return;
 
-  // Upload profile picture
-  const uploadPicture = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("user_id", userId);
-
-    try {
-      const res = await axios.post(
-        "http://127.0.0.1:5000/api/user/upload_pic",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-      setProfilePic(res.data.file_url);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const updateEmail = async () => {
-    try {
-      await axios.post("http://127.0.0.1:5000/api/user/update_email", {
-        user_id: userId,
-        new_email: newEmail,
-      });
-      alert("Email updated successfully");
-      setEmail(newEmail);
-      setNewEmail("");
-    } catch (err) {
-      alert("Error updating email");
-    }
-  };
-
-  const changePassword = async () => {
-    try {
-      await axios.post("http://127.0.0.1:5000/api/user/change_password", {
-        user_id: userId,
-        old_password: passwords.old,
-        new_password: passwords.new,
-      });
-      alert("Password updated!");
-      setPasswords({ old: "", new: "" });
-    } catch (err) {
-      alert("Invalid password");
-    }
+    axios
+      .delete(`http://127.0.0.1:5000/api/user/${userId}`)
+      .then(() => {
+        alert("Account deleted.");
+        sessionStorage.clear();
+        window.location.href = "/login";
+      })
+      .catch((err) => console.log("Delete error:", err));
   };
 
   return (
-    <div className="profile-container">
-      <div className="profile-card">
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="profile-page-container">
+        
+        <h2 className="profile-title" >User Profile</h2>
 
-        <div className="profile-pic-section">
-          <img
-            src={preview || (profilePic ? `http://127.0.0.1:5000/${profilePic}` : "/default.png")}
-            className="profile-pic"
-            alt="profile"
-          />
-
-          <label className="upload-btn">
-            Upload
-            <input type="file" onChange={handlePicChange} hidden />
-          </label>
-        </div>
-
-        <h2 className="profile-email">{email}</h2>
-
-        <div className="streak-box">
-          <div>
-            <h3 className="streak-number">{streak}</h3>
-            <p className="streak-label">Total Streak Days</p>
+        <div className="profile-card">
+          <div className="profile-email">
+            <label>Email: </label> <br/>
+            <span><i>{email}</i></span>
           </div>
-        </div>
 
-        <div className="settings-section">
+          <br/>
+
+          <div className="profile-streak">
+            <span className="streak-icon">🔥</span>
+            <span><b><i>{streak}</i></b> <b>Day Streak </b></span>
+          </div>
+
+          <br/>
+
+          <div className="profile-divider"></div>
+
           <h3 className="settings-title">Account Settings</h3>
 
-          <div className="settings-box">
-            <h4>Update Email</h4>
-            <input
-              className="input-field"
-              value={newEmail}
-              onChange={(e) => setNewEmail(e.target.value)}
-              placeholder="New Email"
-            />
-            <button className="save-btn" onClick={updateEmail}>Save Email</button>
+          <div className="settings-buttons">
+            <button className="btn">Update Email</button>
+            <button className="btn">Change Password</button>
           </div>
-
-          <div className="settings-box">
-            <h4>Change Password</h4>
-            <input
-              type="password"
-              className="input-field"
-              value={passwords.old}
-              onChange={(e) => setPasswords({ ...passwords, old: e.target.value })}
-              placeholder="Old Password"
-            />
-            <input
-              type="password"
-              className="input-field"
-              value={passwords.new}
-              onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-              placeholder="New Password"
-            />
-            <button className="save-btn" onClick={changePassword}>
-              Update Password
-            </button>
-          </div>
+          
+          <br/>
+          <button className="delete-btn" onClick={handleDelete}>
+            Delete Account
+          </button>
         </div>
-
       </div>
-    </div>
+      </div>
   );
 }
+
+
