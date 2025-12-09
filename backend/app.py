@@ -488,22 +488,18 @@ def update_user(user_id):
         return jsonify({"error": "User not found"}), 404
 
     data = request.get_json()
-    new_email = data.get("email")
+    # new_email = data.get("email")
     new_password = data.get("password")
 
-    if new_email:
-        user.email = new_email
+    # if new_email:
+    #     user.email = new_email
 
     if new_password:
-        user.password = generate_password_hash(new_password)
+        user.password = bcrypt.generate_password_hash(new_password).decode("utf-8")
 
     db.session.commit()
 
     return jsonify({"message": "User updated successfully"})
-
-
-
-
 
 
 if __name__ == '__main__':

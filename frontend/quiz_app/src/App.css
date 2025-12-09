@@ -53,8 +53,9 @@
 
 .profile-page-container {
   background-color: #ede7ff; /* light purple */
-  min-height: 100vh;
+  min-height: 200vh;
   padding-top: 40px;
+  margin-top: 150px;
   display: flex;
   justify-content: center;
 }
@@ -78,8 +79,8 @@
 .profile-title {
   font-size: 32px;
   font-weight: bold;
-  color: #4a0072;
-  margin-bottom: 30px;
+  color: #3f035f;
+  margin-bottom: 10px;
   margin-top: 30px;
   margin-left: 120px;
 }
@@ -124,6 +125,8 @@
 
 .btn{
  color: white ;
+ margin-right: 5px;
+ background-color: #924cb8;
 }
 
 .delete-btn{

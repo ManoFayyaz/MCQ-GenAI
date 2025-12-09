@@ -8,13 +8,13 @@ export default function ProfilePage() {
   const [streak, setStreak] = useState(0);
   const [userId, setUserId] = useState(null);
 
-  // Load userId from sessionStorage once
-  // useEffect(() => {
-  //   const storedId = sessionStorage.getItem("user_id");
-  //   if (storedId) setUserId(storedId);
-  // }, []);
+  // const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
+  // const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
+  
   // Get logged-in user
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -36,6 +36,38 @@ export default function ProfilePage() {
       })
       .catch((err) => console.log("Profile fetch error:", err));
   }, [userId]);
+
+
+//   const handleEmailUpdate = () => {
+//   if (!newEmail) return alert("Please enter a new email");
+
+//   axios.post(`http://127.0.0.1:5000/api/user/${userId}/update`, {
+//     email: newEmail
+//   })
+//   .then(() => {
+//     alert("Email updated successfully!");
+//     setEmail(newEmail);
+//     setShowEmailForm(false);
+//     setNewEmail("");
+//   })
+//   .catch(err => console.log("Email update error:", err));
+// };
+
+const handlePasswordUpdate = () => {
+  if (!newPassword) return alert("Please enter a new password");
+
+  axios.post(`http://127.0.0.1:5000/api/user/${userId}/update`, {
+    password: newPassword
+  })
+  .then(() => {
+    alert("Password updated successfully!");
+    setShowPasswordForm(false);
+    setNewPassword("");
+  })
+  .catch(err => console.log("Password update error:", err));
+};
+
+
 
   const handleDelete = () => {
     if (!userId) return;
@@ -78,10 +110,58 @@ export default function ProfilePage() {
           <h3 className="settings-title">Account Settings</h3>
 
           <div className="settings-buttons">
-            <button className="btn">Update Email</button>
-            <button className="btn">Change Password</button>
+            {/* <button className="btn">Update Email</button>
+            <button className="btn">Change Password</button> */}
+            {/* <button className="btn" onClick={() => setShowEmailForm(true)}>
+              Update Email
+            </button> */}
+
+            <button className="btn" onClick={() => setShowPasswordForm(true)}>
+              Change Password
+            </button>
+            {/* Email and Password Dialog box */}
+            {/* {showEmailForm && (
+              <div className="update-box">
+                <br/>
+                <input
+                  type="email"
+                  placeholder="Enter new email"
+                  className="form-control mb-2"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                />
+                <button className="btn btn-success" onClick={handleEmailUpdate}>
+                  Save Email 
+                </button>
+
+                <button className="btn btn-secondary " onClick={() => setShowEmailForm(false)}>
+                  Cancel
+                </button>
+              </div>
+            )} */}
+
+            {showPasswordForm && (
+              <div className="update-box ">
+                <br/>
+                <input
+                  type="password"
+                  placeholder="Enter new password"
+                  className="form-control mb-2"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <button className="btn btn-success" onClick={handlePasswordUpdate}>
+                  Save Password
+                </button>
+                <button className="btn btn-secondary" onClick={() => setShowPasswordForm(false)}>
+                  Cancel
+                </button>
+              </div>
+            )}
+
           </div>
           
+          {/* Delete account */}
           <br/>
           <button className="delete-btn" onClick={handleDelete}>
             Delete Account
