@@ -290,12 +290,12 @@ export default function Prepwise() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">Number of MCQs (5–50):</label>
+              <label className="form-label fw-bold">Number of MCQs (5–30):</label>
               <input
                 type="number"
                 className="form-control"
                 min="5"
-                max="50"
+                max="30"
                 value={mcqCount}
                 onChange={(e) => setMcqCount(e.target.value)}
               />
@@ -410,32 +410,3 @@ export default function Prepwise() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

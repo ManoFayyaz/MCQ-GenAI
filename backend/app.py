@@ -206,8 +206,10 @@ def upload_and_generate():
     context = retrieve_context(query_for_retrieval, collection_name, top_k=6)
     if not context:
         context = text
-
+    
     parsed_quiz = generate_mcqs_from_text(context, number=num_questions, topic=topic, level=difficulty)
+    if not parsed_quiz:
+        return jsonify({"error": "MCQ generation failed due to rate limiting. Please wait 30 seconds and try again."}), 429
     mcq_items = mcq_parsed_list_from_llm(parsed_quiz)
 
     quiz_row = Quiz(user_id=user_id, upload_id=upload.id, topic=topic, difficulty=difficulty, num_questions=num_questions, source="rag_pipeline_v1")
@@ -364,7 +366,11 @@ def retake_quiz():
     query_for_retrieval = topic if topic else "generate questions from the entire document"
     context = retrieve_context(query_for_retrieval, collection_name, top_k=6)
 
+
     parsed_quiz = generate_mcqs_from_text(context, number=num_q, topic=topic, level=difficulty)
+    if not parsed_quiz:
+        return jsonify({"error": "MCQ generation failed due to rate limiting. Please wait 30 seconds and try again."}), 429
+    
     mcq_items = mcq_parsed_list_from_llm(parsed_quiz)
 
     quiz_row = Quiz(user_id=user_id, upload_id=upload.id, topic=topic, difficulty=difficulty, num_questions=num_q, source="rag_pipeline_v1")
