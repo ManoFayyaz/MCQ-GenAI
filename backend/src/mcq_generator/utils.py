@@ -23,7 +23,8 @@ POPLER_PATH = r"D:\Poppler\poppler-25.07.0\Library\bin"
 
 # Embedding model and chroma client
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-chroma_client = chromadb.PersistentClient(path="chroma_store")
+# chroma_client = chromadb.PersistentClient(path="chroma_store")
+chroma_client = chromadb.EphemeralClient()
 
 def split_text(text, chunk_size=500, overlap=50):
     chunks = []
