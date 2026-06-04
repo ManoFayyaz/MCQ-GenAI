@@ -4,35 +4,21 @@ import traceback
 from dotenv import load_dotenv
 from src.mcq_generator.logger import logging
 from src.mcq_generator.utils import read_file_and_index, normalize_quiz_json, retrieve_context
-
-from langchain.chat_models import ChatOpenAI,openai
-from langchain.prompts import PromptTemplate    
-from langchain.chains import LLMChain
-from langchain.chains import SequentialChain
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_groq import ChatGroq  
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 load_dotenv()
 
-key=os.getenv("OPENAI_API_KEY")
+key = os.getenv("GROQ_API_KEY")
 
-llm=ChatOpenAI(
-    model="gpt-4o-mini-2024-07-18",
+llm = ChatGroq(
+    model="llama-3.3-70b-versatile",
     api_key=key,
-    max_tokens=5000,
+    max_tokens=1500,
     temperature=0.7
-)
-
-# TEMPLATE = """
-# Text: {text}
-# You are an expert in creating engaging and challenging multiple choice questions (MCQs) for educational purposes.
-# Generate {number} multiple choice questions (MCQs) makesure in the topic of {subject} if it's provided and then keep the complexity level {level} of the questions. 
-# Each question should have 4 options (A, B, C, D) and one correct answer.
-# Important: Include a field called "correct_answer" for each question indicating the correct option (A, B, C, or D).
-# Provide the output in the following JSON format exactly: {response_json}.
-# Ensure the questions are clear, concise, and relevant to the provided text.
-# Questions should not be repeated.
-# Don't forget to include the correct answer for each question in the "correct_answer" field.
-# """
-
+).bind(response_format={"type": "json_object"})
 
 TEMPLATE = """
 Text: {text}
@@ -58,29 +44,9 @@ Ensure:
 - Always include the correct answer.
 """
 
-
-quiz_prompt=PromptTemplate(
-    input_variables=["text","number","topic","level","response_json"],
+quiz_prompt = PromptTemplate(
+    input_variables=["text", "number", "topic", "level", "response_json"],
     template=TEMPLATE
 )
 
-quiz_chain = LLMChain(llm=llm, prompt=quiz_prompt, output_key="quiz", verbose=True)
-
-# TEMPLATE2="""You are an english expert. Giver multiple choice questions (MCQs) for {subject} \" \
-# "You need to evaluate the complexity of the questions " \" \
-# "Update the quiz questions which needs to be simplified or made complex based on the complexity level \" \" \
-# "Quiz mcqs: {quiz} \" 
-# you can check from above quiz mcqs and update the questions """
-
-# quiz_evaluate_prompt=PromptTemplate(
-#     input_variables=["quiz","subject"],
-#     template=TEMPLATE2)
-
-# review_chain=LLMChain(llm=llm,prompt=quiz_evaluate_prompt,output_key="reviewed_quiz",verbose=True)
-
-generate_evaluate_chain=SequentialChain(
-    chains=[quiz_chain],
-    input_variables=["text","number","topic","level","response_json"],
-    output_variables=["quiz"],
-    verbose=True)
-
+generate_evaluate_chain = quiz_prompt | llm | JsonOutputParser()

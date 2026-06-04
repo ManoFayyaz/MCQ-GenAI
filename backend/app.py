@@ -66,7 +66,7 @@ def login():
     password = data.get('password')
 
     user = User.query.filter_by(email=email).first()
-    if user and bcrypt.check_password_hash(user.password, password):
+    if user and bcrypt.check_password_hash(user.password, password.encode('utf-8')):
          return jsonify({
             "message": "Login successful",
             "user": {

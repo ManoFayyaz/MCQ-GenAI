@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 
@@ -7,23 +7,28 @@ function Login() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  
-  const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post("http://127.0.0.1:5000/login", {
-      email,
-      password,
-    });
-    alert(response.data.message);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-    console.log(JSON.parse(localStorage.getItem("user")));
+  // ✅ If already logged in, skip login page entirely
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      navigate("/prepwise");
+    }
+  }, [navigate]);
 
-    navigate("/prepwise");
-  } catch (error) {
-    alert(error.response?.data?.error || "Login failed");
-  }
-};
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/login", {
+        email,
+        password,
+      });
+      alert(response.data.message);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      navigate("/prepwise");
+    } catch (error) {
+      alert(error.response?.data?.error || "Login failed");
+    }
+  };
 
   return (
     <div className="container mt-5">
@@ -31,7 +36,7 @@ function Login() {
         <div className="col-md-5">
           <div className="card shadow-sm">
             <div className="card-body">
-              <h3 className="card-title text-center mb-4 ">Login</h3>
+              <h3 className="card-title text-center mb-4">Login</h3>
               <form onSubmit={handleLogin}>
                 <div className="mb-3">
                   <label className="form-label">Email</label>
@@ -53,7 +58,7 @@ function Login() {
                     required
                   />
                 </div>
-                <button type="submit" className="btn btn-primary w-100 imp_button" >Login</button>
+                <button type="submit" className="btn btn-primary w-100 imp_button">Login</button>
               </form>
               <p className="mt-3 text-center">
                 Don't have an account? <Link to="/register">Register</Link>

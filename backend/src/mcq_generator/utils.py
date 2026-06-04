@@ -144,20 +144,47 @@ def retrieve_context(query, collection_name, top_k=5):
         mcq_logger.error("Error retrieving context: %s", e)
         return ""
 
-def normalize_quiz_json(quiz_str):
-    try:
-        txt = re.sub(r"^```json|```$", "", quiz_str, flags=re.MULTILINE).strip()
-        txt = txt.replace('" correct answer"', '"correct_answer"').replace("' correct answer'", "'correct_answer'")
-        obj = json.loads(txt)
-        return obj
-    except Exception:
+def normalize_quiz_json(quiz_data):
+    """
+    Acts as a secure validation safety net for incoming data arrays.
+    """
+    # 1. If LangChain already delivered a parsed dictionary, return it immediately
+    if isinstance(quiz_data, dict):
+        return quiz_data
+        
+    # 2. Safety handler if a raw text string somehow slips through
+    if isinstance(quiz_data, str):
         try:
-            txt2 = txt.replace("'", '"')
-            obj = json.loads(txt2)
-            return obj
+            txt = re.sub(r"^```json|```$", "", quiz_data, flags=re.MULTILINE).strip()
+            
+            # Isolate json bounds
+            start_idx = txt.find('{')
+            end_idx = txt.rfind('}')
+            if start_idx != -1 and end_idx != -1:
+                txt = txt[start_idx:end_idx + 1]
+                
+            return json.loads(txt)
         except Exception as e:
-            mcq_logger.error("Failed to parse quiz JSON: %s", e)
+            mcq_logger.error("Failed to parse fallback quiz string text: %s", e)
             return {}
+            
+    # 3. If data format is null or unexpected
+    return {}
+
+# def normalize_quiz_json(quiz_str):
+#     try:
+#         txt = re.sub(r"^```json|```$", "", quiz_str, flags=re.MULTILINE).strip()
+#         txt = txt.replace('" correct answer"', '"correct_answer"').replace("' correct answer'", "'correct_answer'")
+#         obj = json.loads(txt)
+#         return obj
+#     except Exception:
+#         try:
+#             txt2 = txt.replace("'", '"')
+#             obj = json.loads(txt2)
+#             return obj
+#         except Exception as e:
+#             mcq_logger.error("Failed to parse quiz JSON: %s", e)
+#             return {}
 
 
 
