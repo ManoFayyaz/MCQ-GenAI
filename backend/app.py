@@ -5,7 +5,6 @@ from flask_cors import CORS
 import os
 import json
 from flask import Flask, request, jsonify, send_from_directory
-from streamlit import user
 from werkzeug.utils import secure_filename
 from flask_bcrypt import Bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
