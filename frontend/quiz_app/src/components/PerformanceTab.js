@@ -11,6 +11,9 @@ import {
   CartesianGrid,
   ResponsiveContainer
 } from "recharts";
+import API_URL from './config';
+
+
 
 export default function PerformanceTab() {
   const [attempts, setAttempts] = useState([]);
@@ -35,7 +38,7 @@ export default function PerformanceTab() {
     if (!userId) return;
 
     axios
-      .get(`http://127.0.0.1:5000/api/user/${userId}/attempts`)
+      .get(`${API_URL}/api/user/${userId}/attempts`)
       .then(res => {
         const formatted = res.data.map(a => ({
           created_at: a.created_at,
@@ -55,7 +58,7 @@ export default function PerformanceTab() {
     if (!userId) return;
 
     axios
-      .get(`http://127.0.0.1:5000/api/user/${userId}/difficulty_trend`)
+      .get(`${API_URL}/api/user/${userId}/difficulty_trend`)
       .then(res => setDifficultyTrend(res.data))
       .catch(err => console.error(err));
   }, [userId]);

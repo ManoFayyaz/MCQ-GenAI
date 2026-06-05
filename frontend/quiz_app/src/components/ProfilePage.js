@@ -1,7 +1,8 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../App.css";
+import API_URL from './config';
+
 
 export default function ProfilePage() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ export default function ProfilePage() {
     console.log("Fetching profile for userId:", userId);
 
     axios
-      .get(`http://127.0.0.1:5000/api/user/${userId}`)
+      .get(`${API_URL}/api/user/${userId}`)
       .then((res) => {
         console.log("Profile data:", res.data); // <-- debug
         setEmail(res.data.email);
@@ -41,7 +42,7 @@ export default function ProfilePage() {
 //   const handleEmailUpdate = () => {
 //   if (!newEmail) return alert("Please enter a new email");
 
-//   axios.post(`http://127.0.0.1:5000/api/user/${userId}/update`, {
+//   axios.post(`${API_URL}/api/user/${userId}/update`, {
 //     email: newEmail
 //   })
 //   .then(() => {
@@ -56,7 +57,7 @@ export default function ProfilePage() {
 const handlePasswordUpdate = () => {
   if (!newPassword) return alert("Please enter a new password");
 
-  axios.post(`http://127.0.0.1:5000/api/user/${userId}/update`, {
+  axios.post(`${API_URL}/api/user/${userId}/update`, {
     password: newPassword
   })
   .then(() => {
@@ -75,7 +76,7 @@ const handlePasswordUpdate = () => {
     if (!confirmDelete) return;
 
     axios
-      .delete(`http://127.0.0.1:5000/api/user/${userId}`)
+      .delete(`${API_URL}/api/user/${userId}`)
       .then(() => {
         alert("Account deleted.");
         sessionStorage.clear();

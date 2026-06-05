@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useQuiz } from "../context/QuizContext";
+import API_URL from './config';
 
 
 export default function Prepwise() {
@@ -144,7 +145,7 @@ export default function Prepwise() {
     formData.append("difficulty", difficulty);
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/upload_generate", {
+      const res = await fetch(`${API_URL}/api/upload_generate`, {
         method: "POST",
         body: formData,
       });
@@ -231,7 +232,7 @@ export default function Prepwise() {
       });
 
       const res=await axios.post(
-        `http://127.0.0.1:5000/api/quiz/${quizId}/submit`,
+        `${API_URL}/api/quiz/${quizId}/submit`,
         { user_id: user.id, answers: answersArray }
       );
 
