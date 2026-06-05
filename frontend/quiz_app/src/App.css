@@ -22,16 +22,6 @@
 }
 
 
-/* Background of profile page*/
-/* .profile-container {
-  min-height: 100vh;
-  background: #5722ad;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
-}
-
 /* Card */
 .profile-card {
   width: 500px;
@@ -49,7 +39,7 @@
   font-size: 20px;
   font-weight: 500;
   color: white;
-} */
+} 
 
 .profile-page-container {
   background-color: #ede7ff; /* light purple */
