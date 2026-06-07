@@ -1,129 +1,336 @@
-.custom-navbar {
-  background-color:#a040dc	; /* light purple */
+/* ─── GLOBAL ─────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.custom-navbar .navbar-brand,
+body {
+  background-color: #0f0f1a;
+  color: #ffffff;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  min-height: 100vh;
+}
+
+/* ─── NAVBAR ─────────────────────────────────────────────── */
+.custom-navbar {
+  background-color: #1e1e2e;
+  border-bottom: 1px solid #2a2a3e;
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.custom-navbar .navbar-brand {
+  color: #d4f542 !important;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  font-family: 'Raleway', sans-serif;
+}
+
+.custom-navbar .navbar-brand:hover {
+  color: #c4e030 !important;
+}
+
 .custom-navbar .nav-link {
-  color: #ffffff; /* white text */
+  color: #a0a0b0 !important;
+  font-weight: 500;
+  margin-left: 8px;
+  padding: 6px 14px !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .custom-navbar .nav-link:hover {
-  color: #5722ad;/* lighter hover color */
+  color: #ffffff !important;
+  background-color: #2a2a3e;
 }
 
-.imp_button{
-    background-color:#a040dc ;
-    color: white;
-    border-color: #a040dc;
+.custom-navbar .nav-link.active {
+  color: #d4f542 !important;
+  background-color: rgba(212, 245, 66, 0.1);
 }
 
-.imp_button:hover{
-    background-color: #5e2184;
+.navbar-toggler {
+  border-color: #2a2a3e !important;
 }
 
-
-/* Card */
-.profile-card {
-  width: 500px;
-  background: white;
-  border-radius: 22px;
-  padding: 40px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  text-align: center;
+.navbar-toggler-icon {
+  filter: invert(1);
 }
 
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.imp_button {
+  background-color: #d4f542;
+  color: #0f0f1a;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 10px 24px;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
 
-/* Email */
-.profile-email {
-  margin-top: 10px;
-  font-size: 20px;
+.imp_button:hover {
+  background-color: #c4e030;
+  color: #0f0f1a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(212, 245, 66, 0.3);
+}
+
+.imp_button:disabled {
+  background-color: #2a2a3e;
+  color: #a0a0b0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-outline-light {
+  border-color: #2a2a3e !important;
+  color: #a0a0b0 !important;
+  border-radius: 10px;
+}
+
+.btn-outline-light:hover {
+  background-color: #2a2a3e !important;
+  color: #ffffff !important;
+}
+
+/* ─── CARDS ──────────────────────────────────────────────── */
+.dark-card {
+  background-color: #1e1e2e;
+  border: 1px solid #2a2a3e;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.2s ease;
+}
+
+.dark-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── FORM INPUTS ────────────────────────────────────────── */
+.dark-input {
+  background-color: #2a2a3e !important;
+  border: 1px solid #3a3a4e !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  transition: border-color 0.2s ease;
+}
+
+.dark-input:focus {
+  border-color: #d4f542 !important;
+  box-shadow: 0 0 0 3px rgba(212, 245, 66, 0.15) !important;
+  outline: none !important;
+}
+
+.dark-input::placeholder {
+  color: #a0a0b0 !important;
+}
+
+.dark-select {
+  background-color: #2a2a3e !important;
+  border: 1px solid #3a3a4e !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+}
+
+.dark-select:focus {
+  border-color: #d4f542 !important;
+  box-shadow: 0 0 0 3px rgba(212, 245, 66, 0.15) !important;
+}
+
+.dark-select option {
+  background-color: #2a2a3e;
+  color: #ffffff;
+}
+
+.form-label {
+  color: #a0a0b0;
+  font-size: 14px;
   font-weight: 500;
-  color: white;
-} 
+  margin-bottom: 6px;
+}
 
+/* ─── PAGE CONTAINER ─────────────────────────────────────── */
+.page-container {
+  min-height: 100vh;
+  background-color: #0f0f1a;
+  padding: 40px 20px;
+}
+
+.centered-container {
+  min-height: 100vh;
+  background-color: #0f0f1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ─── PROFILE PAGE ───────────────────────────────────────── */
 .profile-page-container {
-  background-color: #ede7ff; /* light purple */
-  min-height: 200vh;
-  padding-top: 40px;
-  margin-top: 150px;
+  background-color: #0f0f1a;
+  min-height: 100vh;
+  padding: 40px 20px;
   display: flex;
   justify-content: center;
 }
 
 .profile-card {
-  background: white;
-  width: 420px;
-  padding: 30px;
-  border-radius: 18px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
-}
-
-
-.email-text {
-  text-align: center;
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 25px;
+  background-color: #1e1e2e;
+  border: 1px solid #2a2a3e;
+  width: 480px;
+  padding: 36px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  height: fit-content;
 }
 
 .profile-title {
-  font-size: 32px;
-  font-weight: bold;
-  color: #3f035f;
-  margin-bottom: 10px;
-  margin-top: 30px;
-  margin-left: 120px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
 }
 
-/* ----- STREAKS BOX ----- */
-.streak-box {
-  background: #f4ecff;
-  border: 2px solid #d5c1ff;
-  padding: 20px;
-  border-radius: 15px;
+.profile-email {
+  font-size: 16px;
+  color: #a0a0b0;
+  margin-bottom: 24px;
+}
+
+.email-text {
   text-align: center;
-  margin-bottom: 35px;
+  font-size: 16px;
+  color: #a0a0b0;
+  margin-bottom: 24px;
+}
+
+.settings-title {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* ─── STREAK BOX ─────────────────────────────────────────── */
+.streak-box {
+  background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
+  border: 1px solid #d4f542;
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+  margin-bottom: 28px;
 }
 
 .streak-number {
-  font-size: 40px;
-  font-weight: bold;
-  color: #7b4dff;
+  font-size: 48px;
+  font-weight: 800;
+  color: #d4f542;
+  line-height: 1;
 }
 
 .profile-streak {
-  font-size: 18px;
-  margin-bottom: 25px;
+  font-size: 16px;
+  color: #a0a0b0;
+  margin-top: 8px;
+}
+
+/* ─── BADGES AND TAGS ────────────────────────────────────── */
+.accent-badge {
+  background-color: rgba(212, 245, 66, 0.15);
+  color: #d4f542;
+  border: 1px solid rgba(212, 245, 66, 0.3);
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.muted-text {
+  color: #a0a0b0;
+  font-size: 14px;
+}
+
+/* ─── DIVIDER ────────────────────────────────────────────── */
+.dark-divider {
+  border-color: #2a2a3e;
+  margin: 24px 0;
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0f1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a3e;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4f542;
+}
+
+/* ─── SPINNER OVERLAY ────────────────────────────────────── */
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 15, 26, 0.85);
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 8px;
-  color: white;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
 }
 
-.profile-page-container{
-  background-color: #be78e3;
-  border-radius: 70px;
-}
-.profile-card{
-    background-color: #be78e3;
-
-}
-
-.settings-title{
-  color: white;
+.spinner-text {
+  color: #d4f542;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.btn{
- color: white ;
- margin-right: 5px;
- background-color: #924cb8;
-}
-
-.delete-btn{
+/* ─── DELETE BUTTON ──────────────────────────────────────── */
+.delete-btn {
   border-radius: 10px;
-  background-color: #8f4bb4;
-  color: rgb(255, 255, 255);
-  border-color: white;
-  border-width: 1px;
-  font-size: 18px;
+  background-color: transparent;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+  font-size: 14px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .profile-card {
+    width: 100%;
+  }
+
+  .dark-card {
+    padding: 20px;
+  }
 }
