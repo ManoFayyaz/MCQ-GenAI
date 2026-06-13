@@ -4,6 +4,7 @@ import API_URL from '../config';
 import { Mail, Lock, UserPlus, Brain, ShieldCheck } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 function Register() {
   const [email, setEmail] = useState('');
