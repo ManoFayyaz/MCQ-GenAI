@@ -132,7 +132,7 @@ def get_users():
     users = User.query.all()
     return jsonify([{'id': u.id, 'email': u.email} for u in users])
 
-@app.route('/delete_user/<int:id>', methods=['DELETE'])
+@app.route('/api/user/<int:id>', methods=['DELETE'])
 def delete_user(id):
     user = User.query.get(id)
     if not user:
@@ -479,27 +479,6 @@ def user_attempts(user_id):
     ]
 
     return jsonify(data)
-
-# @app.route("/api/user/<int:user_id>/attempts", methods=["GET"])
-# def user_attempts(user_id):
-#     # Fetch all attempts by user, ordered by date
-#     attempts = QuizAttempt.query.filter_by(user_id=user_id).order_by(QuizAttempt.created_at.asc()).all()
-    
-#     data = [
-#         {
-#             "created_at": a.created_at.isoformat(),
-#             "percentage": a.percentage,
-#             "correct": a.correct_count,
-#             "wrong": a.wrong_count,
-#             "total": a.correct_count + a.wrong_count,
-#             "filename": filename or "No document"
-
-#         }
-#         for a, filename in attempts
-#     ]
-    
-#     return jsonify(data)
-
 
 
 @app.route("/uploads/<path:filename>")
