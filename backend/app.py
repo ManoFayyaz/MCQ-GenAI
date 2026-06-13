@@ -77,6 +77,64 @@ def login():
     else:
         return jsonify({'error': 'Invalid email or password'}), 401
 
+
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+
+@app.route("/api/auth/google", methods=["POST"])
+def google_login():
+    data = request.get_json()
+    token = data.get("credential")
+
+    try:
+        idinfo = id_token.verify_oauth2_token(
+            token,
+            google_requests.Request(),
+            os.environ.get("GOOGLE_CLIENT_ID")
+        )
+
+        email = idinfo["email"]
+        google_id = idinfo["sub"]
+        name = idinfo.get("name", email)
+
+        # Check if user exists
+        user = User.query.filter_by(email=email).first()
+
+        if not user:
+            # Create new Google user
+            user = User(
+                email=email,
+                google_id=google_id,
+                password=None
+            )
+            db.session.add(user)
+            db.session.commit()
+        elif not user.google_id:
+            # Existing email user — link their google_id
+            user.google_id = google_id
+            db.session.commit()
+
+        # Issue your normal JWT
+        token_data = {
+            "user_id": user.id,
+            "email": user.email
+        }
+        jwt_token = jwt.encode(
+            token_data,
+            os.environ.get("JWT_SECRET"),
+            algorithm="HS256"
+        )
+
+        return jsonify({
+            "token": jwt_token,
+            "user": {"id": user.id, "email": user.email}
+        }), 200
+
+    except ValueError as e:
+        return jsonify({"error": "Invalid Google token"}), 401
+
+
+
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()

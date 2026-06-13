@@ -4,15 +4,22 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+# class User(db.Model):
+#     __tablename__ = 'users'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     email = db.Column(db.String(100), unique=True, nullable=False)
+#     password = db.Column(db.String(200), nullable=False)
+#     streak = db.Column(db.Integer, default=0)
+#     last_quiz_at = db.Column(db.DateTime, default=None)
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    password = db.Column(db.String(200), nullable=True)  # changed
+    google_id = db.Column(db.String(255), unique=True, nullable=True)  # new
     streak = db.Column(db.Integer, default=0)
     last_quiz_at = db.Column(db.DateTime, default=None)
-
-
 
 class Upload(db.Model):
     __tablename__ = "uploads"

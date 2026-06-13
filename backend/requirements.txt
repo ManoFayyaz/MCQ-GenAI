@@ -18,6 +18,8 @@ Pillow
 pytesseract
 werkzeug
 gunicorn
+google-auth
+
 
 # openai
 # langchain

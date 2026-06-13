@@ -4,6 +4,9 @@ import axios from "axios";
 import API_URL from '../config';
 import { Mail, Lock, LogIn, Brain } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -60,6 +63,7 @@ function Login() {
           }}>
             <Brain size={32} color="#d4f542" />
           </div>
+          
           <h1 style={{
             color: "#ffffff",
             fontSize: "28px",
@@ -190,6 +194,28 @@ function Login() {
             </button>
 
           </form>
+
+
+        {/* Google Login */}
+        <div style={{ margin: "20px 0", textAlign: "center" }}>
+          <p style={{ color: "#a0a0b0", fontSize: "13px", marginBottom: "12px" }}>or continue with</p>
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              try {
+                const res = await axios.post(`${API_URL}/api/auth/google`, {
+                  credential: credentialResponse.credential
+                });
+                localStorage.setItem("user", JSON.stringify(res.data.user));
+                toast.success("Welcome! 👋");
+                setTimeout(() => navigate("/prepwise"), 1000);
+              } catch (err) {
+                toast.error("Google login failed. Try again.");
+              }
+            }}
+            onError={() => toast.error("Google Login Failed")}
+          />
+        </div>
+
 
           {/* Register Link */}
           <p style={{ textAlign: "center", marginTop: "24px", color: "#a0a0b0", fontSize: "14px" }}>

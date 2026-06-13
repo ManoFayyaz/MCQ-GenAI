@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import API_URL from '../config';
 import { Mail, Lock, UserPlus, Brain, ShieldCheck } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import { GoogleLogin } from '@react-oauth/google';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -219,6 +220,26 @@ function Register() {
 
           </form>
 
+          {/* Google Register */}
+          <div style={{ margin: "20px 0", textAlign: "center" }}>
+            <p style={{ color: "#a0a0b0", fontSize: "13px", marginBottom: "12px" }}>or continue with</p>
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await axios.post(`${API_URL}/api/auth/google`, {
+                    credential: credentialResponse.credential
+                  });
+                  localStorage.setItem("user", JSON.stringify(res.data.user));
+                  toast.success("Account created! 🎉");
+                  setTimeout(() => navigate("/prepwise"), 1000);
+                } catch (err) {
+                  toast.error("Google sign up failed. Try again.");
+                }
+              }}
+              onError={() => toast.error("Google Sign Up Failed")}
+            />
+          </div>
+        
           <p style={{ textAlign: "center", marginTop: "24px", color: "#a0a0b0", fontSize: "14px" }}>
             Already have an account?{" "}
             <Link to="/" style={{ color: "#d4f542", fontWeight: "600", textDecoration: "none" }}>
