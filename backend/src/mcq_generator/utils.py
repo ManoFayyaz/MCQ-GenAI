@@ -6,7 +6,7 @@ import re
 import zipfile
 from io import BytesIO
 from PyPDF2 import PdfReader
-from openai import embeddings
+# from openai import embeddings
 from pptx import Presentation
 from PIL import Image
 import pytesseract
