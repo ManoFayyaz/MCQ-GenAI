@@ -415,7 +415,7 @@ def user_attempts(user_id):
             "percentage": a.percentage,
             "correct": a.correct_count,
             "wrong": a.wrong_count,
-            "total": a.correct_count + a.wrong_count
+            "total": a.correct_count + a.wrong_count,
             "filename": filename or "No document"
 
         }
