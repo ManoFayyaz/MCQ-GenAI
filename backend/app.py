@@ -126,20 +126,46 @@ def google_login():
         return jsonify({"error": "Invalid Google token"}), 401
 
 
-
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
     return jsonify([{'id': u.id, 'email': u.email} for u in users])
+
 
 @app.route('/api/user/<int:id>', methods=['DELETE'])
 def delete_user(id):
     user = User.query.get(id)
     if not user:
         return jsonify({'error': 'User not found'}), 404
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify({'message': 'User deleted successfully'})
+
+    try:
+        # Delete in order — children first, parent last
+        attempts = QuizAttempt.query.filter_by(user_id=id).all()
+        for a in attempts:
+            db.session.delete(a)
+
+        quizzes = Quiz.query.filter_by(user_id=id).all()
+        for q in quizzes:
+            MCQItem.query.filter_by(quiz_id=q.id).delete()
+            db.session.delete(q)
+
+        Upload.query.filter_by(user_id=id).delete()
+
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({'message': 'User deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+# @app.route('/delete_user/<int:id>', methods=['DELETE'])
+# def delete_user(id):
+#     user = User.query.get(id)
+#     if not user:
+#         return jsonify({'error': 'User not found'}), 404
+#     db.session.delete(user)
+#     db.session.commit()
+#     return jsonify({'message': 'User deleted successfully'})
 
 # -------------------- MCQ Generation Routes --------------------
 
