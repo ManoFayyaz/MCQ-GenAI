@@ -13,7 +13,7 @@ from models import db, User, Upload, Quiz, MCQItem, QuizAttempt
 from src.mcq_generator.utils import file_hash, read_file_and_index, retrieve_context
 from mcqgen_wrapper import generate_mcqs_from_text
 from models import db, User, Upload, Quiz, MCQItem, QuizAttempt
-
+import jwt
 # from performance import performance_bp
 
 app = Flask(__name__)

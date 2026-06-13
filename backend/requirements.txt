@@ -19,7 +19,7 @@ pytesseract
 werkzeug
 gunicorn
 google-auth
-
+PyJWT
 
 # openai
 # langchain
