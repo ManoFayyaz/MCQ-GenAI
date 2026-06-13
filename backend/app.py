@@ -114,22 +114,14 @@ def google_login():
             user.google_id = google_id
             db.session.commit()
 
-        # Issue your normal JWT
-        token_data = {
-            "user_id": user.id,
-            "email": user.email
-        }
-        jwt_token = jwt.encode(
-            token_data,
-            os.environ.get("JWT_SECRET"),
-            algorithm="HS256"
-        )
-
         return jsonify({
-            "token": jwt_token,
-            "user": {"id": user.id, "email": user.email}
+            "message": "Login successful",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "name": name
+            }
         }), 200
-
     except ValueError as e:
         return jsonify({"error": "Invalid Google token"}), 401
 
