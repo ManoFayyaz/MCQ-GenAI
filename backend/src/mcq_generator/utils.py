@@ -6,6 +6,7 @@ import re
 import zipfile
 from io import BytesIO
 from PyPDF2 import PdfReader
+from openai import embeddings
 from pptx import Presentation
 from PIL import Image
 import pytesseract
@@ -13,8 +14,9 @@ from pdf2image import convert_from_bytes
 from docx import Document
 import io
 import hashlib
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 import chromadb
+from chromadb.utils import embedding_functions
 from src.mcq_generator.logger import logging as mcq_logger
 
 # Set these to your local locations if needed
@@ -22,9 +24,12 @@ pytesseract.pytesseract.tesseract_cmd = r"D:\Tesseract-OCR\tesseract.exe"
 POPLER_PATH = r"D:\Poppler\poppler-25.07.0\Library\bin"
 
 # Embedding model and chroma client
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-# chroma_client = chromadb.PersistentClient(path="chroma_store")
+# embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 chroma_client = chromadb.EphemeralClient()
+embedding_fn = embedding_functions.DefaultEmbeddingFunction()
+
+# chroma_client = chromadb.PersistentClient(path="chroma_store")
+
 
 def split_text(text, chunk_size=500, overlap=50):
     chunks = []
@@ -127,9 +132,12 @@ def read_file_and_index(file_obj, user_id, file_hash_id):
     if text.strip():
         try:
             chunks = split_text(text, chunk_size=500, overlap=50)
-            embeddings = embedding_model.encode(chunks).tolist()
+            embeddings = embedding_fn(chunks)
             ids = [f"{file_hash_id}_{i}" for i in range(len(chunks))]
             collection.upsert(documents=chunks, embeddings=embeddings, ids=ids)
+            # embeddings = embedding_model.encode(chunks).tolist()
+            # ids = [f"{file_hash_id}_{i}" for i in range(len(chunks))]
+            # collection.upsert(documents=chunks, embeddings=embeddings, ids=ids)
         except Exception as e:
             mcq_logger.error("Error embedding/upserting: %s", e)
 

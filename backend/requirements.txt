@@ -10,7 +10,6 @@ langchain-core
 langchain-community
 langchain-groq
 chromadb
-sentence-transformers
 PyPDF2
 pdf2image
 python-docx
@@ -27,6 +26,7 @@ gunicorn
 # pyPDF2
 # pandas
 # python -m venv env
+# sentence-transformers
 
 
 # -e .
