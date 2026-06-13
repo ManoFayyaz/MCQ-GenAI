@@ -4,7 +4,6 @@ import axios from "axios";
 import API_URL from '../config';
 import { Mail, Lock, LogIn, Brain } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 
 
