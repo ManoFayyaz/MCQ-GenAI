@@ -403,12 +403,19 @@ def user_quizzes(user_id):
     return jsonify(out)
 
 
-
 @app.route("/api/user/<int:user_id>/attempts", methods=["GET"])
 def user_attempts(user_id):
-    # Fetch all attempts by user, ordered by date
-    attempts = QuizAttempt.query.filter_by(user_id=user_id).order_by(QuizAttempt.created_at.asc()).all()
-    
+    results = db.session.query(
+        QuizAttempt,
+        Upload.filename
+    ).join(
+        Quiz, QuizAttempt.quiz_id == Quiz.id
+    ).outerjoin(
+        Upload, Quiz.upload_id == Upload.id
+    ).filter(
+        QuizAttempt.user_id == user_id
+    ).order_by(QuizAttempt.created_at.asc()).all()
+
     data = [
         {
             "created_at": a.created_at.isoformat(),
@@ -417,12 +424,31 @@ def user_attempts(user_id):
             "wrong": a.wrong_count,
             "total": a.correct_count + a.wrong_count,
             "filename": filename or "No document"
-
         }
-        for a, filename in attempts
+        for a, filename in results
     ]
-    
+
     return jsonify(data)
+
+# @app.route("/api/user/<int:user_id>/attempts", methods=["GET"])
+# def user_attempts(user_id):
+#     # Fetch all attempts by user, ordered by date
+#     attempts = QuizAttempt.query.filter_by(user_id=user_id).order_by(QuizAttempt.created_at.asc()).all()
+    
+#     data = [
+#         {
+#             "created_at": a.created_at.isoformat(),
+#             "percentage": a.percentage,
+#             "correct": a.correct_count,
+#             "wrong": a.wrong_count,
+#             "total": a.correct_count + a.wrong_count,
+#             "filename": filename or "No document"
+
+#         }
+#         for a, filename in attempts
+#     ]
+    
+#     return jsonify(data)
 
 
 
