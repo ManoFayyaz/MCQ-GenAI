@@ -27,9 +27,6 @@ POPLER_PATH = r"D:\Poppler\poppler-25.07.0\Library\bin"
 # embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 chroma_client = chromadb.EphemeralClient()
 embedding_fn = embedding_functions.DefaultEmbeddingFunction()
-embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="paraphrase-multilingual-MiniLM-L12-v2"
-)
 
 # chroma_client = chromadb.PersistentClient(path="chroma_store")
 
