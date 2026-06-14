@@ -20,6 +20,7 @@ werkzeug
 gunicorn
 google-auth
 PyJWT
+sentence-transformers
 
 # openai
 # langchain
