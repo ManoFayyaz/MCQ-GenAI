@@ -22,7 +22,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
 app.config["SECRET_KEY"] = SECRET_KEY
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": [
+    "https://mcq-rag-ai.vercel.app",
+    "http://localhost:3000"
+]}})
 app.config.from_pyfile('config.py')
 bcrypt = Bcrypt(app)
 db.init_app(app)
