@@ -23,10 +23,23 @@ app.config["SECRET_KEY"] = SECRET_KEY
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config.from_pyfile('config.py')
 
+
+
 CORS(app, resources={r"/*": {"origins": [
     "https://mcq-rag-ai.vercel.app",
     "http://localhost:3000"
-]}})
+]}}, methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+allow_headers=["Content-Type", "Authorization"])
+
+@app.before_request
+def handle_options():
+    if request.method == "OPTIONS":
+        response = jsonify({'status': 'ok'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+        return response
+
 bcrypt = Bcrypt(app)
 db.init_app(app)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
