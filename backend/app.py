@@ -21,15 +21,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
 app.config["SECRET_KEY"] = SECRET_KEY
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+
 app.config.from_pyfile('config.py')
-
-
-
-CORS(app, resources={r"/*": {"origins": [
-    "https://mcq-rag-ai.vercel.app",
-    "http://localhost:3000"
-]}}, methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-allow_headers=["Content-Type", "Authorization"])
+CORS(app)
 
 @app.before_request
 def handle_options():
