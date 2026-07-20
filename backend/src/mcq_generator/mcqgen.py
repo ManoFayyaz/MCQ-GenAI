@@ -16,7 +16,7 @@ key = os.getenv("GROQ_API_KEY")
 llm = ChatGroq(
     model="llama-3.3-70b-versatile",
     api_key=key,
-    max_tokens=1500,
+    max_tokens=2500,
     temperature=0.7
 ).bind(response_format={"type": "json_object"})
 
