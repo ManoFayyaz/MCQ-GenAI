@@ -351,7 +351,7 @@ export default function Prepwise() {
                 {/* MCQ Count */}
                 <div style={{ marginBottom: "20px" }}>
                   <label style={labelStyle}>
-                    <Hash size={15} color="#a0a0b0" /> Number of MCQs (5–30)
+                    <Hash size={15} color="#a0a0b0" /> Number of MCQs (5–25)
                   </label>
                   <input
                     type="number"
