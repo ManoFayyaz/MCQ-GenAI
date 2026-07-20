@@ -355,7 +355,7 @@ export default function Prepwise() {
                   </label>
                   <input
                     type="number"
-                    min="5" max="30"
+                    min="5" max="25"
                     value={mcqCount}
                     onChange={(e) => setMcqCount(e.target.value)}
                     style={inputStyle}
